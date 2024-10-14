@@ -74,7 +74,7 @@ jobs:
         uses: softprops/action-gh-release@v2.0.8
         with:
           tag_name: v${{ steps.update_version.outputs.new_version }}
-          name: python-project-sandbox-v${{ steps.update_version.outputs.new_version }}
+          name: repo-dispatch-event-sender-v${{ steps.update_version.outputs.new_version }}
           body: |
             Changes in this Release:
             ${{ steps.changelog.outputs.changelog }}
