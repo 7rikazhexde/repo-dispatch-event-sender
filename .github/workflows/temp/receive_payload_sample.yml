@@ -1,0 +1,244 @@
+name: Sample Receive From repo-dispatch-event-sender Action
+
+on:
+  repository_dispatch:
+    types:
+      - repo-dispatch-event-receive
+
+jobs:
+  test-and-deploy-testmon:
+    strategy:
+      matrix:
+        os: ${{ github.event.client_payload.os_list }}
+        python-version: ${{ github.event.client_payload.python_versions }}
+    runs-on: ${{ matrix.os }}
+    env:
+      TZ: "Asia/Tokyo"
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      tests_executed: ${{ steps.pytest-testmon.outputs.tests_executed }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.1
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.2.0
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Set timezone
+        uses: szenius/set-timezone@v2.0
+        with:
+          timezoneLinux: "Asia/Tokyo"
+          timezoneMacos: "Asia/Tokyo"
+          timezoneWindows: "Tokyo Standard Time"
+
+      - name: Install poetry
+        run: |
+          pip install poetry
+          echo "Poetry version: $(poetry --version)"
+
+      - name: Install dependencies
+        run: |
+          poetry install
+          echo "Installed dependencies:"
+          poetry show --tree
+
+      - name: Fetch previous testmon data
+        shell: bash
+        run: |
+          echo "Fetching previous testmon data..."
+          git fetch origin ghpages:ghpages || true
+          folder_name="testmon-data_${{ matrix.os }}_python_${{ matrix.python-version }}"
+          git checkout ghpages -- $folder_name/.testmondata || true
+          if [ -f $folder_name/.testmondata ]; then
+            echo "Previous testmon data found. Moving to current directory."
+            mv $folder_name/.testmondata .testmondata
+            rm -rf $folder_name
+          else
+            echo "No previous testmon data found for ${{ matrix.os }} with Python ${{ matrix.python-version }}."
+          fi
+        continue-on-error: true
+
+      - name: Run tests with testmon
+        id: pytest-testmon
+        shell: bash
+        run: |
+          echo "Running tests with testmon..."
+          output=$(poetry run pytest --testmon -v)
+          echo "$output"
+
+          echo "testmon_output<<EOF" >> $GITHUB_OUTPUT
+          echo "$output" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          if echo "$output" | grep -q "collected 0 items"; then
+           echo "No tests executed. Skipping deployment and further workflows."
+           echo "tests_executed=false" >> $GITHUB_OUTPUT
+          else
+           echo "Tests executed. Proceeding with deployment and further workflows."
+           echo "tests_executed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create testmon directory and move .testmondata
+        shell: bash
+        run: |
+          echo "Creating testmon directory..."
+          folder_name="testmon-data_${{ matrix.os }}_python_${{ matrix.python-version }}"
+          mkdir -p "$folder_name"
+          echo "Moving .testmondata file..."
+          if [ -f ".testmondata" ]; then
+            mv ".testmondata" "$folder_name/.testmondata" && echo "File moved successfully." || echo "Failed to move file."
+          else
+            echo "Warning: .testmondata file not found in root directory."
+          fi
+          echo "Contents of $folder_name:"
+          ls -la "$folder_name"
+
+      - name: Upload testmon data
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: testmon-data_${{ matrix.os }}_python_${{ matrix.python-version }}
+          path: testmon-data_${{ matrix.os }}_python_${{ matrix.python-version }}/.testmondata
+          if-no-files-found: warn
+          include-hidden-files: true
+          retention-days: 1
+        if: steps.pytest-testmon.outputs.tests_executed == 'true'
+
+  deploy-testmon:
+    needs: test-and-deploy-testmon
+    if: contains(needs.test-and-deploy-testmon.result, 'success')
+    runs-on: ubuntu-latest
+    outputs:
+      updated_testmon_json: ${{ steps.deploy_testmon.outputs.updated_testmon_json }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.1
+        with:
+          fetch-depth: 0
+
+      - name: Download testmon data
+        uses: actions/download-artifact@v4.1.8
+        with:
+          path: downloaded-artifacts
+
+      - name: Setup Git
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          echo "Git configuration set."
+
+      - name: Prepare os_list and python_versions
+        run: |
+          os_list='${{ join(github.event.client_payload.os, ' ') }}'
+          python_versions_list='${{ join(github.event.client_payload.python_versions, ' ') }}'
+
+          echo "OS List: $os_list"
+          echo "Python Versions List: $python_versions_list"
+
+          echo "os_list=$os_list" >> $GITHUB_ENV
+          echo "python_versions_list=$python_versions_list" >> $GITHUB_ENV
+
+      - name: Deploy testmon data to GitHub Pages
+        id: deploy_testmon
+        run: |
+          echo "Deploying testmon data to GitHub Pages..."
+          git fetch origin ghpages:ghpages || git checkout -b ghpages
+          git checkout ghpages
+
+          changes_made=false
+          updated_testmon_json="["
+          for os in $os_list; do
+            for python_version in $python_versions_list; do
+              folder_name="testmon-data_${os}_python_${python_version}"
+              artifact_folder="downloaded-artifacts/testmon-data_${os}_python_${python_version}"
+              echo "Processing $os with Python $python_version..."
+              if [ -d "$artifact_folder" ]; then
+                if [ -f "${artifact_folder}/.testmondata" ]; then
+                  echo "Changes detected for $os with Python $python_version, updating..."
+                  mkdir -p "$folder_name"
+                  cp "${artifact_folder}/.testmondata" "$folder_name/.testmondata"
+                  git add "$folder_name"
+                  changes_made=true
+                  updated_testmon_json+="{\"os\":\"${os}\", \"python_version\":\"${python_version}\"},"
+                else
+                  echo "No .testmondata file found in $artifact_folder"
+                fi
+              else
+                echo "Artifact folder not found: $artifact_folder"
+              fi
+            done
+          done
+
+          # JSONの末尾のカンマを削除して配列を閉じる
+          updated_testmon_json="${updated_testmon_json%,}]"
+          echo "$updated_testmon_json" | jq .
+
+          if [ "$changes_made" = true ]; then
+            echo "Changes made, committing and pushing..."
+            git commit -m "Update testmon data on GitHub Pages" || echo "No changes to commit"
+            git push origin ghpages || echo "No changes to push"
+            echo "deploy_status=updated" >> $GITHUB_OUTPUT
+            echo "updated_testmon_json=$updated_testmon_json" >> $GITHUB_OUTPUT
+          else
+            echo "No changes to commit"
+            echo "deploy_status=unchanged" >> $GITHUB_OUTPUT
+            echo "updated_testmon_json=$updated_testmon_json" >> $GITHUB_OUTPUT
+          fi
+
+      - name: List deployed files
+        if: always()
+        run: |
+          git checkout ghpages
+          echo "Deployed testmon data files:"
+          find . -name ".testmondata"
+          echo "Contents of ghpages branch:"
+          ls -R
+
+  trigger-other-workflows:
+    needs: [test-and-deploy-testmon, deploy-testmon]
+    if: needs.test-and-deploy-testmon.result == 'success' && needs.deploy-testmon.outputs.updated_testmon_json != '[]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output os and python versions
+        run: |
+          echo "OS: ${{ needs.deploy-testmon.outputs.updated_testmon_json }}"
+          echo "Python versions: ${{ needs.deploy-testmon.outputs.updated_testmon_json }}"
+
+      - name: Prepare client payload
+        id: prepare-payload
+        run: |
+          os_list=$(echo '${{ needs.deploy-testmon.outputs.updated_testmon_json }}' | jq -c '[.[].os] | unique')
+          python_versions=$(echo '${{ needs.deploy-testmon.outputs.updated_testmon_json }}' | jq -c '[.[].python_version] | unique')
+          echo "os_list=$os_list" >> $GITHUB_OUTPUT
+          echo "python_versions=$python_versions" >> $GITHUB_OUTPUT
+
+      #- name: Trigger pytest-cov workflow
+      #  uses: peter-evans/repository-dispatch@v3.0.0
+      #  with:
+      #    event-type: run-pytest-cov
+      #    client-payload: |
+      #      {
+      #        "os": ${{ steps.prepare-payload.outputs.os_list }},
+      #        "python_versions": ${{ steps.prepare-payload.outputs.python_versions }},
+      #        "skip_tests": false
+      #      }
+
+      #- name: Trigger pytest-html workflow
+      #  uses: peter-evans/repository-dispatch@v3.0.0
+      #  with:
+      #    event-type: run-pytest-html
+      #    client-payload: |
+      #      {
+      #        "os": ${{ steps.prepare-payload.outputs.os_list }},
+      #        "python_versions": ${{ steps.prepare-payload.outputs.python_versions }},
+      #        "skip_tests": false
+      #      }
+
+      #- name: Log workflow triggers
+      #  run: |
+      #    echo "Triggered pytest-cov and pytest-html workflows."
