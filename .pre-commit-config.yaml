@@ -11,6 +11,7 @@ repos:
         args: [--markdown-linebreak-ext=md]
       # Make the last line of the file a newline code
       - id: end-of-file-fixer
+        exclude: '^(requirements.txt|requirements-dev.txt)$'
       # Unify line break code to LF
       - id: mixed-line-ending
         args: [--fix=lf]
