@@ -1,0 +1,27 @@
+name: Sample Use repo-dispatch-event-sender Action
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  test-and-send-dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.1
+
+      - name: Send Payload to Pytest Testmon
+        # 暫定でローカル環境指定にする
+        # リポジトリ公開後はリモートURL形式に変更する
+        uses: ./
+        with:
+          repository_name: '7rikazhexde/repo-dispatch-event-sender'
+          event_tyoe: 'repo-dispatch-event-receive'
+          ghpages_branch: 'ghpages'  # 省略可能
+          os_list: 'ubuntu-latest macos-13 windows-latest'
+          python_versions: '3.11 3.12'
+          custom_param: 'custom_param_test_val'  # 省略可能
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

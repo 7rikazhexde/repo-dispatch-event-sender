@@ -1,0 +1,57 @@
+name: 'Repo Dispatch Event Sender'
+description: 'A GitHub Action to trigger repository_dispatch events using the GitHub CLI (gh) command.'
+author: '7rikazhexde'
+
+inputs:
+  # ペイロードの生成条件
+  #  - required: true の場合は環境変数の設定が必須
+  #  - required: false の場合は環境変数の設定は不要だが、設定した場合はその値でペイロード生成処理に渡る
+  #  - required: false の場合に現状のdefault値と異なる値に設定した場合は、その値がペイロード生成処理に渡る(*1)
+  repository_name:
+    description: 'Repository name'
+    required: true
+    default: 'your-repo'
+  event_type:
+    description: 'Event name'
+    required: true
+    default: 'your-repository_dispatch-type'
+  ghpages_branch:
+    description: 'Target branch to fetch testmon data from'
+    required: false
+    default: 'gh-pages'
+  os_list:
+    description: 'Space-separated list of OS to run tests on'
+    required: true
+    default: 'ubuntu-latest macos-13 windows-latest'
+  python_versions:
+    description: 'Space-separated list of Python versions to test'
+    required: true
+    default: '3.11 3.12'
+  custom_param:
+    description: 'An optional custom parameter for additional configuration'
+    required: false
+    default: 'default_value'
+    #default: 'custom_param_test_val' # (*1)
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5.2.0
+      with:
+        python-version: '3.12'
+
+    - name: Run Python script
+      # 環境変数の設定条件
+      #  - inputでrequired: trueの変数が対象
+      #  - inputでrequired: falseの変数の場合は省略可能(*2)
+      shell: bash
+      run: |
+        python3 repo_dispatch_event_sender/src/dispatch/send_payload.py
+      env:
+        REPOSITORY_NAME: ${{ inputs.repository_name }}
+        EVENT_TYPE: ${{ inputs.event_type }}
+        GHPAGES_BRANCH: ${{ inputs.ghpages_branch }} # (*2)
+        OS_LIST: ${{ inputs.os_list }}
+        PYTHON_VERSIONS: ${{ inputs.python_versions }}
+        CUSTOM_PARAM: ${{ inputs.custom_param }} # (*2)
