@@ -106,9 +106,7 @@ jobs:
         uses: actions/checkout@v4.2.1
 
       - name: Send Payload to Pytest Testmon
-        # Temporarily using local path.
-        # Replace with the remote URL after the repository is public.
-        uses: ./
+        uses: 7rikazhexde/repo-dispatch-event-sender@main
         with:
           repository_name: '7rikazhexde/repo-dispatch-event-sender'
           event_type: 'repo-dispatch-event-receive'
@@ -127,6 +125,9 @@ jobs:
 >
 > Optional-2:\
 > Can be omitted. The omitted double is not sent in the payload.
+>
+> Workflow example:\
+> [send_payload_to_pytest_testmon.yml](https://github.com/7rikazhexde/python-project-sandbox/blob/main/.github/workflows/send_payload_to_pytest_testmon.yml)
 
 ## License
 

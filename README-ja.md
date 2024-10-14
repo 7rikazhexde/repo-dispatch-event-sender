@@ -106,9 +106,7 @@ jobs:
         uses: actions/checkout@v4.2.1
 
       - name: Send Payload to Pytest Testmon
-        # 暫定でローカル環境指定にする
-        # リポジトリ公開後はリモートURL形式に変更する
-        uses: ./
+        uses: 7rikazhexde/repo-dispatch-event-sender@main
         with:
           repository_name: '7rikazhexde/repo-dispatch-event-sender'
           event_tyoe: 'repo-dispatch-event-receive'
@@ -121,12 +119,15 @@ jobs:
 ```
 
 > [!NOTE]
-> オプション1:  
-> デフォルト値(`'gh_pages'`)と異なるブランチ名を指定する場合はその値でペイロードを作成する。  
+> オプション1:\
+> デフォルト値(`'gh_pages'`)と異なるブランチ名を指定する場合はその値でペイロードを作成する。\
 > 省略した場合もデフォルト値(`'gh_pages'`)でペイロードを作成する。  
 >
-> オプション2:
-> 省略可能。省略した場合はペイロードで送信しない。
+> オプション2:\
+> 省略可能。省略した場合はペイロードで送信しない。\
+>
+> ワークフローの実例:\
+> [send_payload_to_pytest_testmon.yml](https://github.com/7rikazhexde/python-project-sandbox/blob/main/.github/workflows/send_payload_to_pytest_testmon.yml)
 
 ## ライセンス
 
