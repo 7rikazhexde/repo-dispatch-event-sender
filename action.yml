@@ -47,7 +47,7 @@ runs:
       #  - inputでrequired: falseの変数の場合は省略可能(*2)
       shell: bash
       run: |
-        python3 repo_dispatch_event_sender/src/dispatch/send_payload.py
+        python3 ${{ github.action_path }}/repo_dispatch_event_sender/src/dispatch/send_payload.py
       env:
         REPOSITORY_NAME: ${{ inputs.repository_name }}
         EVENT_TYPE: ${{ inputs.event_type }}
