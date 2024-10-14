@@ -22,7 +22,7 @@ jobs:
         run: |
           pip install poetry
           echo "Poetry version: $(poetry --version)"
-  
+
       - name: Install dependencies
         run: |
           poetry install

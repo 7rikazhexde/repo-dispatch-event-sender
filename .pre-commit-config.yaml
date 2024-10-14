@@ -39,14 +39,14 @@ repos:
         verbose: true
       - id: poetry-lock
         verbose: true
-      - id: poetry-export
-        args: ["-f", "requirements.txt", "-o", "requirements.txt", "--without-hashes"]
-        verbose: true
-        files: ^pyproject\.toml$
-      - id: poetry-export
-        args: ["--with", "dev", "-f", "requirements.txt", "-o", "requirements-dev.txt", "--without-hashes"]
-        verbose: true
-        files: ^pyproject\.toml$
+      #- id: poetry-export
+      #  args: ["-f", "requirements.txt", "-o", "requirements.txt", "--without-hashes"]
+      #  verbose: true
+      #  files: ^pyproject\.toml$
+      #- id: poetry-export
+      #  args: ["--with", "dev", "-f", "requirements.txt", "-o", "requirements-dev.txt", "--without-hashes"]
+      #  verbose: true
+      #  files: ^pyproject\.toml$
 
   # Reference: https://github.com/DavidAnson/markdownlint-cli2#overview
   # > markdownlint-cli is a traditional command-line interface for markdownlint.
@@ -60,7 +60,7 @@ repos:
     rev: v0.6.9
     hooks:
       - id: ruff
-        args: ["--fix","project_a"]
+        args: ["--fix","repo_dispatch_event_sender"]
       - id: ruff-format
 
   - repo: https://github.com/pre-commit/mirrors-mypy

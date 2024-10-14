@@ -12,7 +12,6 @@ English | [日本語](README-ja.md)
 - Easily integrates with CI/CD workflows to automate dispatching.
 - I hope to be able to support other payloads in the future.
 
-
 ## Requirements
 
 ### Mandatory
@@ -77,7 +76,7 @@ You can set these environment variables either in your terminal or within your C
 To trigger a GitHub repository dispatch event, run the following command.
 
 > [!NOTE]  
-> Ensure you have set the **environment variables** as listed in the configuration section.  
+> Ensure you have set the **environment variables** as listed in the configuration section.\
 > Once set, the payload will be sent to GitHub based on these environment variables.
 
 ```bash
@@ -122,13 +121,12 @@ jobs:
 ```
 
 > [!NOTE]
-> Optional-1
-> - If you specify a branch name different from the default value (`'gh_pages'`), the payload is created with that value.
-> - If omitted, payload is created with default value (`'gh_pages'`).
-> 
-> Optional-2
-> - Can be omitted. The omitted double is not sent in the payload.
-
+> Optional-1:\
+> If you specify a branch name different from the default value (`'gh_pages'`), the payload is created with that value.\
+> If omitted, payload is created with default value (`'gh_pages'`).
+>
+> Optional-2:\
+> Can be omitted. The omitted double is not sent in the payload.
 
 ## License
 
