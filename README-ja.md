@@ -19,6 +19,7 @@
       - [設定](#設定)
       - [使用方法](#使用方法-1)
     - [ワークフロー向け](#ワークフロー向け)
+      - [ワークフローの実例](#ワークフローの実例)
   - [ライセンス](#ライセンス)
 
 ## 機能
@@ -118,7 +119,8 @@ jobs:
           python_versions: '3.11 3.12'
           custom_param: 'custom_param_test_val'  # オプション2
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          #GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # オプション3
+          GH_TOKEN: ${{ secrets.YOURT_GHA_PAT }} # オプション3
 ```
 
 > [!NOTE]
@@ -128,9 +130,16 @@ jobs:
 >
 > オプション2:\
 > 省略可能です。省略した場合はペイロードに含まれません。
->
-> ワークフローの実例:\
-> [send_payload_to_pytest_testmon.yml](https://github.com/7rikazhexde/python-project-sandbox/blob/main/.github/workflows/send_payload_to_pytest_testmon.yml)
+
+> [!IMPORTANT]
+> オプション3:\
+> repo権限を付与した`PAT`の設定が必要です。\
+> もし、`GITHUB_TOKEN`を使用する場合はActions -> Workflow permissions から、**Read and write permissions**を有効にする必要があります。\
+> ワークフロー利用時はセキュリティの観点から`PAT`を使用することを推奨します。
+
+#### ワークフローの実例
+
+[send_payload_to_pytest_testmon.yml](https://github.com/7rikazhexde/python-project-sandbox/blob/main/.github/workflows/send_payload_to_pytest_testmon.yml)
 
 ## ライセンス
 
