@@ -12,9 +12,9 @@ jobs:
         os: ${{ github.event.client_payload.os_list }}
         python-version: ${{ github.event.client_payload.python_versions }}
     runs-on: ${{ matrix.os }}
-    permissions:
-      contents: write
-      pull-requests: write
+    #permissions:
+    #  contents: write
+    #  pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.2.1
