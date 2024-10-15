@@ -5,6 +5,23 @@ English | [日本語](README-ja.md)
 
 `repo-dispatch-event-sender` is a Python project designed to trigger [repository_dispatch](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#repository_dispatch) webhook events using the GitHub CLI ([gh](https://docs.github.com/en/github-cli/github-cli)). It generates payloads based on environment variables and executes the `gh` command to start specific workflows within a repository.
 
+## ToC
+
+- [Repo Dispatch Event Sender](#repo-dispatch-event-sender)
+  - [ToC](#toc)
+  - [Features](#features)
+  - [Requirements](#requirements)
+    - [Mandatory](#mandatory)
+    - [Optional](#optional)
+  - [Usage](#usage)
+    - [For Python Use](#for-python-use)
+      - [Clone the Project](#clone-the-project)
+      - [Install Dependencies](#install-dependencies)
+      - [Configuration](#configuration)
+      - [How to Use](#how-to-use)
+    - [For Workflow Use](#for-workflow-use)
+  - [License](#license)
+
 ## Features
 
 - Triggers [repository_dispatch](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#repository_dispatch) webhook events via Python commands and GitHub Actions components.
