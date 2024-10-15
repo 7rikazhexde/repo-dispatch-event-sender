@@ -1,0 +1,24 @@
+name: Send Payload Action to Pytest
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  test-and-send-dispatch:
+    if: github.actor != 'dependabot[bot]' && !startsWith(github.event.head_commit.message, 'Bump version')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.1
+
+      - name: Send Payload to Pytest
+        uses: 7rikazhexde/repo-dispatch-event-sender@main
+        with:
+          repository_name: '7rikazhexde/python-project-sandbox'
+          event_type: 'test_multi_os'
+          os_list: 'ubuntu-latest macos-13 windows-latest'
+          python_versions: '3.10 3.11 3.12'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
