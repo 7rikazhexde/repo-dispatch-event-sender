@@ -16,7 +16,7 @@ jobs:
       - name: Send Payload to Pytest
         uses: 7rikazhexde/repo-dispatch-event-sender@main
         with:
-          repository_name: '7rikazhexde/python-project-sandbox'
+          repository_name: '7rikazhexde/repo-dispatch-event-sender'
           event_type: 'test_multi_os'
           os_list: 'ubuntu-latest macos-13 windows-latest'
           python_versions: '3.10 3.11 3.12'
