@@ -3,14 +3,12 @@
 
 English | [日本語](README-ja.md)
 
-`repo-dispatch-event-sender` is a Python project designed to trigger [repository dispatch](https://docs.github.com/ja/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#repository_dispatch) events using the GitHub CLI (`gh`). It generates a payload based on environment variables and executes the `gh` command to initiate specific workflows in a repository.
+`repo-dispatch-event-sender` is a Python project designed to trigger [repository_dispatch](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#repository_dispatch) webhook events using the GitHub CLI ([gh](https://docs.github.com/en/github-cli/github-cli)). It generates payloads based on environment variables and executes the `gh` command to start specific workflows within a repository.
 
 ## Features
 
-- Dynamically generates payloads for GitHub repository dispatch events.
-- Supports multiple environments and customizable parameters like OS and Python versions.
-- Easily integrates with CI/CD workflows to automate dispatching.
-- I hope to be able to support other payloads in the future.
+- Triggers [repository_dispatch](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#repository_dispatch) webhook events via Python commands and GitHub Actions components.
+- Supports multiple environments with customization options for OS and Python versions. (Currently, only Python versions are supported.)
 
 ## Requirements
 
@@ -21,77 +19,66 @@ English | [日本語](README-ja.md)
 
 ### Optional
 
-- [Poetry](https://python-poetry.org/) is recommended for dependency management, but you can use other virtual environments like `venv`.
+- [Poetry](https://python-poetry.org/)
 
-## Installation
+## Usage
 
-### Clone the repository
+### For Python Use
+
+#### Clone the Project
 
 ```bash
 git clone https://github.com/yourusername/repo-dispatch-event-sender.git
 cd repo-dispatch-event-sender
 ```
 
-### Install dependencies
+#### Install Dependencies
 
-If you are using [Poetry](https://python-poetry.org/), run the following command:
+If [Poetry](https://python-poetry.org/) is installed, run the following to create a virtual environment and install all necessary dependencies:
 
 ```bash
 poetry install
 ```
 
-This will create a virtual environment and install the necessary dependencies.
-
-If using `venv` or another virtual environment, install the dependencies with:
+If you are using another virtual environment like `venv`, install dependencies with:
 
 ```bash
-pip install -r requirements.txt -r requirements-dev.txt
+pip install -r requirements.txt requirements-dev.txt
 ```
 
-## Configuration
+#### Configuration
 
-The project uses environment variables to configure the payload that will be sent to the GitHub API.
+The project uses environment variables to create the payloads sent to the GitHub API.
 
-> [!NOTE]  
-> Set the following **environment variables** before running the command.
+> [!NOTE]
+> Please ensure the following **environment variables** are set beforehand.
 
-### Mandatory
+| Input             | Description                                                                                  | Required |
+|-------------------|----------------------------------------------------------------------------------------------|----------|
+| `REPOSITORY_NAME` | The name of the target repository (e.g., 'yourusername/yourrepo')                            | Yes      |
+| `EVENT_TYPE`      | The type of event to trigger (e.g., 'test_workflow')                                         | Yes      |
+| `OS_LIST`         | A space-separated list of target OS versions (e.g., 'ubuntu-latest macos-13 windows-latest') | Yes      |
+| `PYTHON_VERSIONS` | A space-separated list of Python versions (e.g., '3.11 3.12')                                | Yes      |
+| `GHPAGES_BRANCH`  | The GitHub Pages branch (default is 'gh_pages')                                              | No       |
+| `CUSTOM_PARAM`    | Custom parameters for the payload (optional)                                                 | No       |
 
-- `REPOSITORY_NAME`: Name of the target repository (e.g., `yourusername/yourrepo`)
-- `EVENT_TYPE`: The event type to trigger (e.g., `test_workflow`)
-- `OS_LIST`: Space-separated list of target OS versions (e.g., `ubuntu-latest macos-13 windows-latest`)
-- `PYTHON_VERSIONS`: Space-separated list of Python versions (e.g., `3.11 3.12`)
+#### How to Use
 
-### Optional
-
-- `GHPAGES_BRANCH`: The branch used for GitHub Pages (default: `gh_pages`)
-- `CUSTOM_PARAM`: Custom parameters for the payload (optional)
-
-You can set these environment variables either in your terminal or within your CI/CD pipeline configuration.
-
-## Usage
-
-### Run the Dispatch Command
-
-To trigger a GitHub repository dispatch event, run the following command.
-
-> [!NOTE]  
-> Ensure you have set the **environment variables** as listed in the configuration section.\
-> Once set, the payload will be sent to GitHub based on these environment variables.
+To trigger the GitHub repository dispatch event, run the following command:
 
 ```bash
 poetry run python repo_dispatch_event_sender/src/dispatch/send_payload.py
 ```
 
-### Example Workflow
-
-Below is an example of how to use this project in a GitHub Actions workflow.
+### For Workflow Use
 
 > [!NOTE]
-> Installation of the `gh` command is not required for use in workflow.
+> When using this in a workflow, the `gh` command installation is not required.
+>
+> The payload will be sent based on the environment variables, but in workflows, you should configure the input parameters defined by the action component using `with`. Once specified in the workflow, it will automatically set the environment variables, create, and send the payload internally.
 
 ```yaml
-name: Sample Use of repo-dispatch-event-sender Action
+name: Sample Use repo-dispatch-event-sender Action
 
 on:
   push:
@@ -110,23 +97,23 @@ jobs:
         with:
           repository_name: '7rikazhexde/repo-dispatch-event-sender'
           event_type: 'repo-dispatch-event-receive'
-          ghpages_branch: 'ghpages'  # Optional-1
+          ghpages_branch: 'ghpages'  # Option 1
           os_list: 'ubuntu-latest macos-13 windows-latest'
           python_versions: '3.11 3.12'
-          custom_param: 'custom_param_test_val'  # Optional-2
+          custom_param: 'custom_param_test_val'  # Option 2
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 > [!NOTE]
-> Optional-1:\
-> If you specify a branch name different from the default value (`'gh_pages'`), the payload is created with that value.\
-> If omitted, payload is created with default value (`'gh_pages'`).
+> Option 1:\
+> If you want to specify a branch name different from the default (`'gh_pages'`), use that value to create the payload.\
+> If omitted, the default value (`'gh_pages'`) will be used.  
 >
-> Optional-2:\
-> Can be omitted. The omitted double is not sent in the payload.
+> Option 2:\
+> This is optional. If omitted, the custom parameter will not be included in the payload.
 >
-> Workflow example:\
+> Example workflow:\
 > [send_payload_to_pytest_testmon.yml](https://github.com/7rikazhexde/python-project-sandbox/blob/main/.github/workflows/send_payload_to_pytest_testmon.yml)
 
 ## License

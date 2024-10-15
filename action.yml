@@ -3,10 +3,10 @@ description: 'A GitHub Action to trigger repository_dispatch events using the Gi
 author: '7rikazhexde'
 
 inputs:
-  # ペイロードの生成条件
-  #  - required: true の場合は環境変数の設定が必須
-  #  - required: false の場合は環境変数の設定は不要だが、設定した場合はその値でペイロード生成処理に渡る
-  #  - required: false の場合に現状のdefault値と異なる値に設定した場合は、その値がペイロード生成処理に渡る(*1)
+  # Payload Generation Conditions
+  #  - required: true -> The environment variable must be set.
+  #  - required: false -> The environment variable is optional, but if set, its value will be passed to the payload generation process.
+  #  - If required: false and a value different from the current default is set, that value will be passed to the payload generation process.(*1)
   repository_name:
     description: 'Repository name'
     required: true
@@ -42,9 +42,9 @@ runs:
         python-version: '3.12'
 
     - name: Run Python script
-      # 環境変数の設定条件
-      #  - inputでrequired: trueの変数が対象
-      #  - inputでrequired: falseの変数の場合は省略可能(*2)
+      # Environment Variable Setting Conditions
+      #  - Variables with required: true in the input must be set.
+      #  - Variables with required: false in the input are optional.(*2)
       shell: bash
       run: |
         python3 ${{ github.action_path }}/repo_dispatch_event_sender/src/dispatch/send_payload.py

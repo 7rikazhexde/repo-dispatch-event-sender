@@ -534,6 +534,21 @@ pytest = ">=6.2.5"
 dev = ["pre-commit", "pytest-asyncio", "tox"]
 
 [[package]]
+name = "pytest-testmon"
+version = "2.1.1"
+description = "selects tests affected by changed files and methods"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pytest-testmon-2.1.1.tar.gz", hash = "sha256:8ebe2c3de42d99306ee54cd4536fed0fc48346a954420da904b18e8d59b5da98"},
+    {file = "pytest_testmon-2.1.1-py3-none-any.whl", hash = "sha256:8271ca47bc8c80760c4fc7fd7895ea786b111bbb31f13eeea879a6fd11fe2226"},
+]
+
+[package.dependencies]
+coverage = ">=6,<8"
+pytest = ">=5,<9"
+
+[[package]]
 name = "pytest-xdist"
 version = "3.6.1"
 description = "pytest xdist plugin for distributed testing, most importantly across multiple CPUs"
@@ -704,4 +719,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "c7f8f5b371ac664c65b6c15e23288805e5717afe51bf3b56ab00d3908cd7ace6"
+content-hash = "a40c1ab305bba7d89deb5c522acf6f9a51db9709af8db0a57666a330da4723cc"
