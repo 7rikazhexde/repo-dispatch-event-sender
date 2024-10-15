@@ -1,16 +1,13 @@
-
 # Repo Dispatch Event Sender
 
 [English](README.md) | 日本語
 
-`repo-dispatch-event-sender` は、GitHub CLI (`gh`) を使用して[repository_dispatch](https://docs.github.com/ja/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#repository_dispatch)イベントをトリガーするためのPythonプロジェクトです。環境変数に基づいてペイロードを生成し、リポジトリ内の特定のワークフローを開始するために `gh` コマンドを実行します。
+`repo-dispatch-event-sender` は、GitHub CLI ([gh](https://docs.github.com/ja/github-cli/github-cli)) を使用して[repository_dispatch](https://docs.github.com/ja/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#repository_dispatch) webhookイベントをトリガーするためのPythonプロジェクトです。環境変数に基づいてペイロードを作成し、リポジトリ内の特定のワークフローを開始するために `gh` コマンドを実行します。
 
 ## 機能
 
-- GitHubリポジトリディスパッチイベント用のペイロードを動的に生成します。
-- 複数の環境や、OSおよびPythonバージョンのカスタマイズをサポートします。
-- CI/CDワークフローに簡単に統合して自動ディスパッチを実現します。
-- 将来的にはその他のペイロードもサポートできるようにしたいと思います。
+- [repository_dispatch](https://docs.github.com/ja/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#repository_dispatch)webhookイベントのトリガーはPythonコマンドとGitHub Actionsのアクションコンポーネントで実行できます。
+- 複数の環境や、OSおよびPythonバージョンのカスタマイズをサポートします。(現状はバージョンはPythonのみサポート)
 
 ## 使用条件
 
@@ -21,74 +18,63 @@
 
 ### 任意
 
-- 依存関係管理では[Poetry](https://python-poetry.org/) を推奨しますが、`venv`など、その他、仮想環境でも問題ありません。
+- [Poetry](https://python-poetry.org/)
 
-## インストール
+## 使用方法
 
-### リポジトリをクローンする
+### Python向け
+
+#### プロジェクトをクローンする
 
 ```bash
 git clone https://github.com/yourusername/repo-dispatch-event-sender.git
 cd repo-dispatch-event-sender
 ```
 
-### 依存関係をインストールする
+#### 依存関係をインストールする
 
-[Poetry](https://python-poetry.org/) がインストールされていることを確認し、以下を実行します。
+[Poetry](https://python-poetry.org/) がインストールされていることを確認し、以下を実行します。これにより、仮想環境が作成され、必要な依存関係がインストールされます。
 
 ```bash
 poetry install
 ```
 
-これにより、仮想環境が作成され、必要な依存関係がインストールされます。
-
-venvなどの仮想環境の場合は、下記で依存関係をインストールしてください。
+`venv`などの仮想環境を使用する場合は、下記で依存関係をインストールしてください。
 
 ```bash
 pip install requirement.txt requirement-dev.txt
 ```
 
-## 設定
+#### 設定
 
-プロジェクトは、GitHub APIに送信されるペイロードを構成するために環境変数を使用します。
+プロジェクトでは、GitHub APIに送信されるペイロードを作成するために環境変数を使用します。
 
 > [!NOTE]
 > 事前に以下の**環境変数**を設定してください。
 
-### 必須
+| 入力項目           | 説明                                                                               |Required|
+|-------------------|-----------------------------------------------------------------------------------|--------|
+| `REPOSITORY_NAME` | 対象リポジトリの名前 (例: `yourusername/yourrepo`)                                  |  Yes   |
+| `EVENT_TYPE`      | トリガーするイベントの種類 (例: `test_workflow`)                                     |  Yes  |
+| `OS_LIST`         | 対象OSバージョンのスペース区切りリスト (例: `ubuntu-latest macos-13 windows-latest`)  |  Yes  |
+| `PYTHON_VERSIONS` | Pythonバージョンのスペース区切りリスト (例: `3.11 3.12`)                             |  Yes  |
+| `GHPAGES_BRANCH`  | GitHub Pagesブランチ (デフォルトは `gh_pages`)                                      |  No   |
+| `CUSTOM_PARAM`    | ペイロードのカスタムパラメータ（オプション）                                          |  No   |
 
-- `REPOSITORY_NAME`: 対象リポジトリの名前 (例: `yourusername/yourrepo`)
-- `EVENT_TYPE`: トリガーするイベントの種類 (例: `test_workflow`)
-- `OS_LIST`: 対象OSバージョンのスペース区切りリスト (例: `ubuntu-latest macos-13 windows-latest`)
-- `PYTHON_VERSIONS`: Pythonバージョンのスペース区切りリスト (例: `3.11 3.12`)
-
-### 任意
-
-- `GHPAGES_BRANCH`: GitHub Pagesブランチ (デフォルトは `gh_pages`)
-- `CUSTOM_PARAM`: ペイロードのカスタムパラメータ（オプション）
-
-これらの環境変数は、ターミナルで設定するか、CI/CDパイプラインの設定内で指定できます。
-
-## 使用方法
-
-### ディスパッチコマンドを実行する
+#### 使用方法
 
 GitHubリポジトリディスパッチイベントをトリガーするには、以下のコマンドを実行します。
-
-> [!NOTE]
-> 事前に設定記載の**環境変数**を設定してください。  
-> 設定後は設定された環境変数に基づいて、GitHubにペイロードが送信されます。
 
 ```bash
 poetry run python repo_dispatch_event_sender/src/dispatch/send_payload.py
 ```
 
-### ワークフローの例
+### ワークフロー向け
 
-以下は、このプロジェクトをGitHub Actionsのワークフロー内で使用する例です。
-
-> **Note**  
+> [!NOTE]
 > ワークフローで使用する場合は`gh`コマンドのインストールは不要です。
+>
+> ペイロードは環境変数を元に送信されますが、ワークフローではアクションコンポーネントによって定義される入力パラメーターを`with`で設定してください。ワークフロー内で指定することで内部で環境変数の設定とペイロード作成と送信が実行されます。
 
 ```yaml
 name: Sample Use repo-dispatch-event-sender Action
@@ -120,11 +106,11 @@ jobs:
 
 > [!NOTE]
 > オプション1:\
-> デフォルト値(`'gh_pages'`)と異なるブランチ名を指定する場合はその値でペイロードを作成する。\
-> 省略した場合もデフォルト値(`'gh_pages'`)でペイロードを作成する。  
+> デフォルト値(`'gh_pages'`)と異なるブランチ名を指定する場合はその値でペイロードを作成します。\
+> 省略した場合はデフォルト値(`'gh_pages'`)でペイロードを作成します。  
 >
 > オプション2:\
-> 省略可能。省略した場合はペイロードで送信しない。\
+> 省略可能です。省略した場合はペイロードに含まれません。
 >
 > ワークフローの実例:\
 > [send_payload_to_pytest_testmon.yml](https://github.com/7rikazhexde/python-project-sandbox/blob/main/.github/workflows/send_payload_to_pytest_testmon.yml)
