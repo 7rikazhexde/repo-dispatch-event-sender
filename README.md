@@ -20,6 +20,7 @@ English | [日本語](README-ja.md)
       - [Configuration](#configuration)
       - [How to Use](#how-to-use)
     - [For Workflow Use](#for-workflow-use)
+      - [Example workflow](#example-workflow)
   - [License](#license)
 
 ## Features
@@ -119,7 +120,8 @@ jobs:
           python_versions: '3.11 3.12'
           custom_param: 'custom_param_test_val'  # Option 2
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          #GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Option 3
+          GH_TOKEN: ${{ secrets.YOURT_GHA_PAT }} # Option 3
 ```
 
 > [!NOTE]
@@ -129,9 +131,16 @@ jobs:
 >
 > Option 2:\
 > This is optional. If omitted, the custom parameter will not be included in the payload.
->
-> Example workflow:\
-> [send_payload_to_pytest_testmon.yml](https://github.com/7rikazhexde/python-project-sandbox/blob/main/.github/workflows/send_payload_to_pytest_testmon.yml)
+
+> [!IMPORTANT]
+> Option 3:\
+> `PAT` with repo authority must be set up.\
+> If you use `GITHUB_TOKEN`, you must enable **Read and write permissions** from Actions -> Workflow permissions.\
+> It is recommended to use `PAT` for security reasons when using workflow.
+
+#### Example workflow
+
+[send_payload_to_pytest_testmon.yml](https://github.com/7rikazhexde/python-project-sandbox/blob/main/.github/workflows/send_payload_to_pytest_testmon.yml)
 
 ## License
 

@@ -21,4 +21,5 @@ jobs:
           os_list: 'ubuntu-latest macos-13 windows-latest'
           python_versions: '3.10 3.11 3.12'
         env:
-          GH_TOKEN: ${{ secrets.PAT_FOR_PUSHES }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          #GH_TOKEN: ${{ secrets.PAT_FOR_PUSHES }}
