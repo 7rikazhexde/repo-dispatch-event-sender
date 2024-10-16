@@ -1,0 +1,40 @@
+name: Send Payload Action to Pullrequest
+
+on:
+  pull_request:
+    branches: "main"
+
+jobs:
+  send-pullrequest-check-dispatch:
+    if: github.actor != 'dependabot[bot]' && !startsWith(github.event.pull_request.title, 'Bump version')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.1
+
+      - name: Send Payload to Non Dependabot Pull Request
+        uses: 7rikazhexde/repo-dispatch-event-sender@main
+        with:
+          repository_name: '7rikazhexde/repo-dispatch-event-sender'
+          event_type: 'non_dependabot_pullrequest'
+          os_list: 'ubuntu-latest macos-13 windows-latest'
+          python_versions: '3.10 3.11 3.12'
+        env:
+          GH_TOKEN: ${{ secrets.PAT_FOR_PUSHES }}
+
+  send-dependabot-pullrequest-check-dispatch:
+    if: github.actor == 'dependabot[bot]' && !startsWith(github.event.pull_request.title, 'Bump version')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.1
+
+      - name: Send Payload to Dependabot Pull Request
+        uses: 7rikazhexde/repo-dispatch-event-sender@main
+        with:
+          repository_name: '7rikazhexde/repo-dispatch-event-sender'
+          event_type: 'dependabot_pullrequest'
+          os_list: 'ubuntu-latest macos-13 windows-latest'
+          python_versions: '3.10 3.11 3.12'
+        env:
+          GH_TOKEN: ${{ secrets.PAT_FOR_PUSHES }}
