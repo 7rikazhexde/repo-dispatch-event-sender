@@ -1,9 +1,5 @@
 name: Dependabot PR Check
 
-#on:
-#  pull_request:
-#    branches: "main"
-
 on:
   repository_dispatch:
     types:
