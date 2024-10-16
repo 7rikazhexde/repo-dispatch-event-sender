@@ -1,9 +1,5 @@
 name: PR Check (Except Dependabot)
 
-#on:
-#  pull_request:
-#    branches: "main"
-
 on:
   repository_dispatch:
     types:
