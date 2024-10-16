@@ -1,7 +1,9 @@
 name: 'Repo Dispatch Event Sender'
 description: 'A GitHub Action to trigger repository_dispatch events using the GitHub CLI (gh) command.'
 author: '7rikazhexde'
-
+branding:
+  icon: 'send'
+  color: 'green'
 inputs:
   # Payload Generation Conditions
   #  - required: true -> The environment variable must be set.
