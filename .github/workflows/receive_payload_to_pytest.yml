@@ -3,10 +3,10 @@ name: Run Tests Multi-OS
 on:
   repository_dispatch:
     types:
-      - test_multi_os
+      - send_payload_to_pytest
 
 jobs:
-  test:
+  run_tests:
     strategy:
       matrix:
         os: ${{ github.event.client_payload.os_list }}
