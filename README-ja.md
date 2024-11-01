@@ -2,7 +2,7 @@
 
 [English](README.md) | 日本語
 
-`repo-dispatch-event-sender` は、GitHub CLI ([gh](https://docs.github.com/ja/github-cli/github-cli)) を使用して[repository_dispatch](https://docs.github.com/ja/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#repository_dispatch) webhookイベントをトリガーするためのPythonプロジェクトです。環境変数に基づいてペイロードを作成し、リポジトリ内の特定のワークフローを開始するために `gh` コマンドを実行します。1. [Repo Dispatch Event Sender](#repo-dispatch-event-sender)
+`repo-dispatch-event-sender` は、GitHub CLI ([gh](https://docs.github.com/ja/github-cli/github-cli)) を使用して[repository_dispatch](https://docs.github.com/ja/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#repository_dispatch) webhookイベントをトリガーするためのPythonプロジェクトです。環境変数に基づいてペイロードを作成し、リポジトリ内の特定のワークフローを開始するために `gh` コマンドを実行します。
 
 ## 目次
 
