@@ -119,23 +119,28 @@ jobs:
           version_list: '[3.11,3.12]'
           custom_param: 'custom_param_test_val'  # Option 2
         env:
-          #GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Option 3
-          GH_TOKEN: ${{ secrets.YOURT_GHA_PAT }} # Option 3
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Option 3
+          #GH_TOKEN: ${{ secrets.YOURT_GHA_PAT }} # Option 3
 ```
 
 > [!NOTE]
-> Option 1:\
+> **Option 1:**\
 > If you want to specify a branch name different from the default (`'gh_pages'`), use that value to create the payload.\
 > If omitted, the default value (`'gh_pages'`) will be used.  
 >
-> Option 2:\
+> **Option 2:**\
 > This is optional. If omitted, the custom parameter will not be included in the payload.
 
-> [!IMPORTANT]
-> Option 3:\
-> `PAT` with repo authority must be set up.\
-> If you use `GITHUB_TOKEN`, you must enable **Read and write permissions** from Actions -> Workflow permissions.\
-> It is recommended to use `PAT` for security reasons when using workflow.
+> [!IMPORTANT]  
+> **Option 3:**\
+> `GITHUB_TOKEN`:  
+> This is a token automatically issued by GitHub Actions, providing access to the repository.  
+> If you use `GITHUB_TOKEN`, please enable **Read and write permissions** under **Actions -> Workflow permissions**.  
+> For security reasons, the use of `GITHUB_TOKEN` is recommended.  
+>\
+> `Personal Access Token (PAT)`:  
+> If you need to perform actions that are not supported by `GITHUB_TOKEN`, you must configure a `PAT` with repository permissions.  
+> Make sure to manage `PAT` carefully to prevent any leakage risks.  
 
 #### Example workflow
 
