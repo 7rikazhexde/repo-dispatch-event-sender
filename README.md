@@ -1,5 +1,7 @@
 # Repo Dispatch Event Sender
 
+[![Run Tests Multi-OS](https://github.com/7rikazhexde/repo-dispatch-event-sender/actions/workflows/receive_payload_to_pytest.yml/badge.svg)](https://github.com/7rikazhexde/repo-dispatch-event-sender/actions/workflows/receive_payload_to_pytest.yml)
+
 English | [日本語](README-ja.md)
 
 `repo-dispatch-event-sender` is a Python project designed to trigger [repository_dispatch](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#repository_dispatch) webhook events using the GitHub CLI ([gh](https://docs.github.com/en/github-cli/github-cli)). It generates payloads based on environment variables and executes the `gh` command to start specific workflows within a repository.
