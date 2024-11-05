@@ -6,13 +6,13 @@ using the GitHub CLI (gh) command. It constructs a payload based on the provided
 inputs and triggers a webhook to start specific workflows in a repository.
 
 Functions:
-    build_payload(data_dict: Mapping[str, Union[str, List[str]]]) -> str:
+    build_payload(data_dict: Mapping[str, Any]) -> str:
         Constructs the payload command for the gh CLI.
 """
 
 import os
 import subprocess
-from typing import Dict, List, Mapping, Union
+from typing import Any, Dict, List, Mapping, Union
 
 # Supported keys in the payload
 SUPPORTED_KEYS = {
@@ -24,19 +24,39 @@ SUPPORTED_KEYS = {
     "custom_param",
 }
 
-# Keys that require space-separated values to be split into lists
-SPLIT_REQUIRED_KEYS = {"os_list", "python_versions"}
+# Keys that require array handling (in [item1,item2] format)
+ARRAY_KEYS = {"os_list", "python_versions"}
 
 # Default values to be skipped in the payload if no user-defined values are provided
 DEFAULT_VALUES = {"custom_param": "default_value", "ghpages_branch": "gh_pages"}
 
 
-def build_payload(data_dict: Mapping[str, Union[str, List[str]]]) -> str:
+def parse_array_input(value: str) -> List[str]:
+    """
+    Parse input string in bracket format [item1,item2,item3].
+
+    Args:
+        value (str): Input string in [item1,item2,item3] format (no quotes required)
+
+    Returns:
+        List[str]: List of parsed values
+    """
+    # Remove whitespace and brackets
+    cleaned = value.strip().strip("[]")
+    if not cleaned:
+        return []
+    # Split by comma and strip each item
+    return [item.strip() for item in cleaned.split(",")]
+
+
+def build_payload(data_dict: Mapping[str, Any]) -> str:
     """
     Constructs the gh API command to trigger a repository_dispatch event.
 
     Args:
-        data_dict (Mapping[str, Union[str, List[str]]]): The dictionary containing the payload data.
+        data_dict (Mapping[str, Any]): The dictionary containing the payload data.
+                                      For array inputs (os_list, python_versions),
+                                      values should be in [item1,item2] format.
 
     Returns:
         str: The complete gh API command(repository_dispatch webhook payload) to be executed.
@@ -50,12 +70,15 @@ def build_payload(data_dict: Mapping[str, Union[str, List[str]]]) -> str:
     payload_cmd.append(f"-f event_type={data_dict['event_type']}")
 
     for key, value in data_dict.items():
-        if isinstance(value, list):
-            for item in value:
+        if key in ARRAY_KEYS:
+            items = value if isinstance(value, list) else parse_array_input(str(value))
+            for item in items:
                 payload_cmd.append(f"-f client_payload[{key}][]={item}")
-        # If the variable is not specified in client_payload, it should be explicitly excluded below.
         elif (
-            isinstance(value, str) and key != "repository_name" and key != "event_type"
+            isinstance(value, str)
+            and key != "repository_name"
+            and key != "event_type"
+            and not (key in DEFAULT_VALUES and value == DEFAULT_VALUES[key])
         ):
             payload_cmd.append(f"-f client_payload[{key}]={value}")
 
@@ -65,6 +88,8 @@ def build_payload(data_dict: Mapping[str, Union[str, List[str]]]) -> str:
 def main() -> None:
     """
     Main function to load environment variables, build the payload, and execute the gh command.
+    Values from with: section in actions.yml are passed as environment variables.
+    Array values should be specified in [item1,item2] format without quotes.
     """
     env_vars: Dict[str, Union[str, List[str]]] = {}
     for key in SUPPORTED_KEYS:
@@ -72,8 +97,8 @@ def main() -> None:
         value = os.getenv(env_var_name)
 
         if value:
-            if key in SPLIT_REQUIRED_KEYS:
-                env_vars[key] = value.split()
+            if key in ARRAY_KEYS:
+                env_vars[key] = parse_array_input(value)
             elif key in DEFAULT_VALUES and value == DEFAULT_VALUES[key]:
                 continue
             else:
