@@ -76,7 +76,8 @@ jobs:
           tag_name: v${{ steps.update_version.outputs.new_version }}
           name: repo-dispatch-event-sender-v${{ steps.update_version.outputs.new_version }}
           body: |
-            Changes in this Release:
+            ## Changes in this Release
+
             ${{ steps.changelog.outputs.changelog }}
 
             For full changes, see the [comparison view](${{ github.server_url }}/${{ github.repository }}/compare/v${{ steps.current_version.outputs.version }}..v${{ steps.update_version.outputs.new_version }})
