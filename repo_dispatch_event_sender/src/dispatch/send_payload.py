@@ -20,12 +20,12 @@ SUPPORTED_KEYS = {
     "event_type",
     "ghpages_branch",
     "os_list",
-    "python_versions",
+    "version_list",
     "custom_param",
 }
 
 # Keys that require array handling (in [item1,item2] format)
-ARRAY_KEYS = {"os_list", "python_versions"}
+ARRAY_KEYS = {"os_list", "version_list"}
 
 # Default values to be skipped in the payload if no user-defined values are provided
 DEFAULT_VALUES = {"custom_param": "default_value", "ghpages_branch": "gh_pages"}
@@ -55,7 +55,7 @@ def build_payload(data_dict: Mapping[str, Any]) -> str:
 
     Args:
         data_dict (Mapping[str, Any]): The dictionary containing the payload data.
-                                      For array inputs (os_list, python_versions),
+                                      For array inputs (os_list, version_list),
                                       values should be in [item1,item2] format.
 
     Returns:
