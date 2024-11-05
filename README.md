@@ -27,7 +27,7 @@ English | [日本語](README-ja.md)
 ## Features
 
 - Triggers [repository_dispatch](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#repository_dispatch) webhook events via Python commands and GitHub Actions components.
-- Supports multiple environments with customization options for OS and Python versions. (Currently, only Python versions are supported.)
+- Support payloads such as `os` and `version`.
 
 > [!IMPORTANT]
 > The repository_dispatch event works with push triggers to the main branch, but it does not trigger on pull request events. Therefore, please be aware that the repository_dispatch event cannot be used with pull request events. For more details, please refer to the [official GitHub documentation](https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/triggering-a-workflow#triggering-a-workflow-from-a-workflow).
@@ -79,8 +79,8 @@ The project uses environment variables to create the payloads sent to the GitHub
 |-------------------|--------------------------------------------------------------------------------------------|----------|
 | `REPOSITORY_NAME` | The name of the target repository (e.g., 'yourusername/yourrepo')                          | Yes      |
 | `EVENT_TYPE`      | The type of event to trigger (e.g., 'test_workflow')                                       | Yes      |
-| `OS_LIST`         | A comma-separated list of OS in brackets (e.g., '[ubuntu-latest,macos-13,windows-latest]')   | Yes      |
-| `VERSION_LIST` | A comma-separated list of versions in brackets (e.g., for Python: '[3.11,3.12]')                  | Yes      |
+| `OS_LIST`         | A comma-separated list of OS in brackets (e.g., '[ubuntu-latest,macos-13,windows-latest]') | Yes      |
+| `VERSION_LIST`    | A comma-separated list of versions in brackets (e.g., for Python: '[3.11,3.12,3.13]')      | Yes      |
 | `GHPAGES_BRANCH`  | The GitHub Pages branch (default is 'gh_pages')                                            | No       |
 | `CUSTOM_PARAM`    | Custom parameters for the payload (optional)                                               | No       |
 
