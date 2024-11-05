@@ -1,4 +1,5 @@
 import logging
+import subprocess
 from typing import Any, Dict
 
 import pytest
@@ -15,31 +16,22 @@ def format_command(command: str) -> str:
     return "\n".join(command.split(" -f "))
 
 
-def test_build_payload_with_os_list(caplog: pytest.LogCaptureFixture) -> None:
-    """
-    Test if the correct command is generated when OS list and Python versions are included.
-
-    Args:
-        None
-
-    Returns:
-        None
-    """
+def test_build_payload_with_bracket_array(caplog: pytest.LogCaptureFixture) -> None:
+    """Test if the correct command is generated when using bracket array format."""
     data: Dict[str, Any] = {
         "repository_name": "example-repo",
         "event_type": "test_workflow",
-        "ghpages_branch": "gh_pages",
-        "os_list": ["ubuntu-latest", "macos-13", "windows-latest"],
-        "python_versions": ["3.11", "3.12"],
+        "python_versions": "[3.10,3.11,3.12]",
+        "os_list": "[ubuntu-latest,macos-latest,windows-latest]",
     }
     expected_cmd = (
         "gh api repos/example-repo/dispatches -f event_type=test_workflow "
-        "-f client_payload[ghpages_branch]=gh_pages "
-        "-f client_payload[os_list][]=ubuntu-latest "
-        "-f client_payload[os_list][]=macos-13 "
-        "-f client_payload[os_list][]=windows-latest "
+        "-f client_payload[python_versions][]=3.10 "
         "-f client_payload[python_versions][]=3.11 "
-        "-f client_payload[python_versions][]=3.12"
+        "-f client_payload[python_versions][]=3.12 "
+        "-f client_payload[os_list][]=ubuntu-latest "
+        "-f client_payload[os_list][]=macos-latest "
+        "-f client_payload[os_list][]=windows-latest"
     )
 
     with caplog.at_level(logging.INFO):
@@ -47,24 +39,93 @@ def test_build_payload_with_os_list(caplog: pytest.LogCaptureFixture) -> None:
         logger.info(f"Generated command:\n{format_command(expected_cmd)}")
 
 
+def test_build_payload_with_single_item_array(caplog: pytest.LogCaptureFixture) -> None:
+    """Test if the correct command is generated when using single item in bracket array."""
+    data: Dict[str, Any] = {
+        "repository_name": "example-repo",
+        "event_type": "test_workflow",
+        "python_versions": "[3.10]",
+        "os_list": "[ubuntu-latest]",
+    }
+    expected_cmd = (
+        "gh api repos/example-repo/dispatches -f event_type=test_workflow "
+        "-f client_payload[python_versions][]=3.10 "
+        "-f client_payload[os_list][]=ubuntu-latest"
+    )
+
+    with caplog.at_level(logging.INFO):
+        assert build_payload(data) == expected_cmd
+        logger.info(f"Generated command:\n{format_command(expected_cmd)}")
+
+
+def test_build_payload_with_empty_array(caplog: pytest.LogCaptureFixture) -> None:
+    """Test if the correct command is generated when using empty arrays."""
+    data: Dict[str, Any] = {
+        "repository_name": "example-repo",
+        "event_type": "test_workflow",
+        "python_versions": "[]",
+        "os_list": "[]",
+    }
+    expected_cmd = "gh api repos/example-repo/dispatches -f event_type=test_workflow"
+
+    with caplog.at_level(logging.INFO):
+        assert build_payload(data) == expected_cmd
+        logger.info(f"Generated command:\n{format_command(expected_cmd)}")
+
+
 def test_build_payload_with_custom_param(caplog: pytest.LogCaptureFixture) -> None:
-    """
-    Test if the correct command is generated when a custom parameter is provided.
-
-    Args:
-        None
-
-    Returns:
-        None
-    """
+    """Test if the correct command is generated when a custom parameter is provided."""
     data: Dict[str, Any] = {
         "repository_name": "example-repo",
         "event_type": "test_workflow",
         "custom_param": "custom_value",
+        "python_versions": "[3.10]",
     }
     expected_cmd = (
         "gh api repos/example-repo/dispatches -f event_type=test_workflow "
-        "-f client_payload[custom_param]=custom_value"
+        "-f client_payload[custom_param]=custom_value "
+        "-f client_payload[python_versions][]=3.10"
+    )
+
+    with caplog.at_level(logging.INFO):
+        assert build_payload(data) == expected_cmd
+        logger.info(f"Generated command:\n{format_command(expected_cmd)}")
+
+
+def test_build_payload_with_list_input(caplog: pytest.LogCaptureFixture) -> None:
+    """Test if the correct command is generated when input is already a list."""
+    data: Dict[str, Any] = {
+        "repository_name": "example-repo",
+        "event_type": "test_workflow",
+        "python_versions": ["3.10", "3.11"],
+        "os_list": ["ubuntu-latest"],
+    }
+    expected_cmd = (
+        "gh api repos/example-repo/dispatches -f event_type=test_workflow "
+        "-f client_payload[python_versions][]=3.10 "
+        "-f client_payload[python_versions][]=3.11 "
+        "-f client_payload[os_list][]=ubuntu-latest"
+    )
+
+    with caplog.at_level(logging.INFO):
+        assert build_payload(data) == expected_cmd
+        logger.info(f"Generated command:\n{format_command(expected_cmd)}")
+
+
+def test_build_payload_with_whitespace(caplog: pytest.LogCaptureFixture) -> None:
+    """Test if the correct command is generated when input contains whitespace."""
+    data: Dict[str, Any] = {
+        "repository_name": "example-repo",
+        "event_type": "test_workflow",
+        "python_versions": "[ 3.10, 3.11 ]",
+        "os_list": "[ubuntu-latest, macos-latest]",
+    }
+    expected_cmd = (
+        "gh api repos/example-repo/dispatches -f event_type=test_workflow "
+        "-f client_payload[python_versions][]=3.10 "
+        "-f client_payload[python_versions][]=3.11 "
+        "-f client_payload[os_list][]=ubuntu-latest "
+        "-f client_payload[os_list][]=macos-latest"
     )
 
     with caplog.at_level(logging.INFO):
@@ -73,24 +134,14 @@ def test_build_payload_with_custom_param(caplog: pytest.LogCaptureFixture) -> No
 
 
 def test_build_payload_skips_default_values(caplog: pytest.LogCaptureFixture) -> None:
-    """
-    Test if the command correctly skips default values like 'gh_pages' for ghpages_branch.
-
-    Args:
-        None
-
-    Returns:
-        None
-    """
+    """Test if default values are correctly skipped in the payload."""
     data: Dict[str, Any] = {
         "repository_name": "example-repo",
         "event_type": "test_workflow",
         "ghpages_branch": "gh_pages",
+        "custom_param": "default_value",
     }
-    expected_cmd = (
-        "gh api repos/example-repo/dispatches -f event_type=test_workflow "
-        "-f client_payload[ghpages_branch]=gh_pages"
-    )
+    expected_cmd = "gh api repos/example-repo/dispatches -f event_type=test_workflow"
 
     with caplog.at_level(logging.INFO):
         assert build_payload(data) == expected_cmd
@@ -98,18 +149,8 @@ def test_build_payload_skips_default_values(caplog: pytest.LogCaptureFixture) ->
 
 
 def test_build_payload_missing_required_keys(caplog: pytest.LogCaptureFixture) -> None:
-    """
-    Test if the correct error (KeyError) is raised when required keys are missing.
-
-    Args:
-        None
-
-    Returns:
-        None
-    """
-    data: Dict[str, Any] = {
-        "event_type": "test_workflow",
-    }
+    """Test if KeyError is raised when required keys are missing."""
+    data: Dict[str, Any] = {"event_type": "test_workflow"}
 
     with caplog.at_level(logging.ERROR):
         with pytest.raises(KeyError):
@@ -117,119 +158,69 @@ def test_build_payload_missing_required_keys(caplog: pytest.LogCaptureFixture) -
         logger.error("KeyError raised due to missing repository_name")
 
 
-def test_main_success_1(
+def test_main_with_all_variables(
     mocker: MockerFixture, caplog: pytest.LogCaptureFixture
 ) -> None:
-    """
-    Test if the correct command is generated when ghpages_branch is set to the default value
-    and other environment variables are present.
-
-    Args:
-        mocker: MockerFixture
-        caplog: LogCaptureFixture
-
-    Returns:
-        None
-    """
+    """Test main function with all environment variables set."""
     mocker.patch(
         "os.getenv",
         side_effect=lambda key: {
             "REPOSITORY_NAME": "example-repo",
             "EVENT_TYPE": "test_workflow",
-            "GHPAGES_BRANCH": "gh_pages",  # Default value
-            "OS_LIST": "ubuntu-latest macos-13 windows-latest",
-            "PYTHON_VERSIONS": "3.11 3.12",
+            "GHPAGES_BRANCH": "custom-branch",
+            "OS_LIST": "[ubuntu-latest,macos-latest]",
+            "PYTHON_VERSIONS": "[3.10,3.11,3.12]",
             "CUSTOM_PARAM": "custom_value",
         }.get(key),
     )
 
     mock_subprocess = mocker.patch("subprocess.run", return_value=None)
 
-    main()
+    with caplog.at_level(logging.INFO):
+        main()
 
     expected_cmd = (
         "gh api repos/example-repo/dispatches -f event_type=test_workflow "
+        "-f client_payload[ghpages_branch]=custom-branch "
         "-f client_payload[os_list][]=ubuntu-latest "
-        "-f client_payload[os_list][]=macos-13 "
-        "-f client_payload[os_list][]=windows-latest "
+        "-f client_payload[os_list][]=macos-latest "
+        "-f client_payload[python_versions][]=3.10 "
         "-f client_payload[python_versions][]=3.11 "
         "-f client_payload[python_versions][]=3.12 "
         "-f client_payload[custom_param]=custom_value"
     )
 
-    actual_cmd = mock_subprocess.call_args[0][0].split()
-    expected_cmd_parts = expected_cmd.split()
-
-    with caplog.at_level(logging.INFO):
-        assert sorted(actual_cmd) == sorted(expected_cmd_parts)
-        logger.info(f"Expected command:\n{format_command(expected_cmd)}")
-        logger.info("\n")  # Add a blank line for better readability
-        logger.info(f"Actual command:\n{format_command(' '.join(actual_cmd))}")
+    actual_cmd = mock_subprocess.call_args[0][0]
+    assert sorted(actual_cmd.split()) == sorted(expected_cmd.split())
 
 
-def test_main_success_2(
+def test_main_minimal_variables(
     mocker: MockerFixture, caplog: pytest.LogCaptureFixture
 ) -> None:
-    """
-    Test if the correct command is generated when a non-default ghpages_branch is used.
-
-    Args:
-        mocker: MockerFixture
-        caplog: LogCaptureFixture
-
-    Returns:
-        None
-    """
+    """Test main function with only required environment variables set."""
     mocker.patch(
         "os.getenv",
         side_effect=lambda key: {
             "REPOSITORY_NAME": "example-repo",
             "EVENT_TYPE": "test_workflow",
-            "GHPAGES_BRANCH": "ghpages",  # Non-default value
-            "OS_LIST": "ubuntu-latest macos-13 windows-latest",
-            "PYTHON_VERSIONS": "3.11 3.12",
-            "CUSTOM_PARAM": "custom_value",
         }.get(key),
     )
 
     mock_subprocess = mocker.patch("subprocess.run", return_value=None)
 
-    main()
-
-    expected_cmd = (
-        "gh api repos/example-repo/dispatches -f event_type=test_workflow "
-        "-f client_payload[ghpages_branch]=ghpages "
-        "-f client_payload[os_list][]=ubuntu-latest "
-        "-f client_payload[os_list][]=macos-13 "
-        "-f client_payload[os_list][]=windows-latest "
-        "-f client_payload[python_versions][]=3.11 "
-        "-f client_payload[python_versions][]=3.12 "
-        "-f client_payload[custom_param]=custom_value"
-    )
-
-    actual_cmd = mock_subprocess.call_args[0][0].split()
-    expected_cmd_parts = expected_cmd.split()
-
     with caplog.at_level(logging.INFO):
-        assert sorted(actual_cmd) == sorted(expected_cmd_parts)
-        logger.info(f"Expected command:\n{format_command(expected_cmd)}")
-        logger.info("\n")  # Add a blank line for better readability
-        logger.info(f"Actual command:\n{format_command(' '.join(actual_cmd))}")
+        main()
+
+    expected_cmd = "gh api repos/example-repo/dispatches -f event_type=test_workflow"
+
+    actual_cmd = mock_subprocess.call_args[0][0]
+    assert actual_cmd == expected_cmd
 
 
-def test_main_value_error(
+def test_main_subprocess_error(
     mocker: MockerFixture, caplog: pytest.LogCaptureFixture
 ) -> None:
-    """
-    Test if SystemExit is raised when build_payload raises a ValueError.
-
-    Args:
-        mocker: MockerFixture
-        caplog: LogCaptureFixture
-
-    Returns:
-        None
-    """
+    """Test main function when subprocess.run raises an error."""
     mocker.patch(
         "os.getenv",
         side_effect=lambda key: {
@@ -238,12 +229,11 @@ def test_main_value_error(
         }.get(key),
     )
 
-    mocker.patch(
-        "repo_dispatch_event_sender.src.dispatch.send_payload.build_payload",
-        side_effect=ValueError("Invalid payload"),
+    mock_subprocess = mocker.patch(
+        "subprocess.run", side_effect=subprocess.CalledProcessError(1, "command")
     )
 
-    with caplog.at_level(logging.ERROR):
-        with pytest.raises(SystemExit):  # Expecting SystemExit due to exit(1)
-            main()
-        logger.error("SystemExit raised due to invalid payload")
+    with pytest.raises(subprocess.CalledProcessError):
+        main()
+
+    assert mock_subprocess.called
