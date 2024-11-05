@@ -24,7 +24,7 @@
 
 ## 機能
 
-- [repository_dispatch](https://docs.github.com/ja/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#repository_dispatch)webhookイベントのトリガーはPythonコマンドとGitHub Actionsのアクションコンポーネントで実行できます。
+- [repository_dispatch](https://docs.github.com/ja/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#repository_dispatch) webhookイベントのトリガーはPythonコマンドとGitHub Actionsのアクションコンポーネントで実行できます。
 - 複数の環境や、OSおよびPythonバージョンのカスタマイズをサポートします。(現状はバージョンはPythonのみサポート)
 
 ## 使用条件
@@ -70,14 +70,14 @@ pip install requirement.txt requirement-dev.txt
 > [!NOTE]
 > 事前に以下の**環境変数**を設定してください。
 
-| 入力項目           | 説明                                                                               |Required|
-|-------------------|-----------------------------------------------------------------------------------|--------|
-| `REPOSITORY_NAME` | 対象リポジトリの名前 (例: `yourusername/yourrepo`)                                  |  Yes   |
-| `EVENT_TYPE`      | トリガーするイベントの種類 (例: `test_workflow`)                                     |  Yes  |
-| `OS_LIST`         | 対象OSバージョンのスペース区切りリスト (例: `ubuntu-latest macos-13 windows-latest`)  |  Yes  |
-| `PYTHON_VERSIONS` | Pythonバージョンのスペース区切りリスト (例: `3.11 3.12`)                             |  Yes  |
-| `GHPAGES_BRANCH`  | GitHub Pagesブランチ (デフォルトは `gh_pages`)                                      |  No   |
-| `CUSTOM_PARAM`    | ペイロードのカスタムパラメータ（オプション）                                          |  No   |
+| 入力項目           | 説明                                                                           |Required|
+|-------------------|--------------------------------------------------------------------------------|--------|
+| `REPOSITORY_NAME` | 対象リポジトリの名前 (例: `yourusername/yourrepo`)                              | Yes    |
+| `EVENT_TYPE`      | トリガーするイベントの種類 (例: `test_workflow`)                                 | Yes    |
+| `OS_LIST`         | ブラケット形式のカンマ区切りOS一覧 (例: '[ubuntu-latest,macos-13,windows-latest]') | Yes    |
+| `PYTHON_VERSIONS` | ブラケット形式のカンマ区切りPythonバージョン一覧 (例: '[3.11,3.12]')               | Yes    |
+| `GHPAGES_BRANCH`  | GitHub Pagesブランチ (デフォルトは `gh_pages`)                                  | No     |
+| `CUSTOM_PARAM`    | ペイロードのカスタムパラメータ（オプション）                                      | No     |
 
 #### 使用方法
 
@@ -113,10 +113,10 @@ jobs:
         uses: 7rikazhexde/repo-dispatch-event-sender@main
         with:
           repository_name: '7rikazhexde/repo-dispatch-event-sender'
-          event_tyoe: 'repo-dispatch-event-receive'
+          event_type: 'repo-dispatch-event-receive'
           ghpages_branch: 'ghpages'  # オプション1
-          os_list: 'ubuntu-latest macos-13 windows-latest'
-          python_versions: '3.11 3.12'
+          os_list: '[ubuntu-latest,macos-13,windows-latest]'
+          python_versions: '[3.11,3.12]'
           custom_param: 'custom_param_test_val'  # オプション2
         env:
           #GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # オプション3

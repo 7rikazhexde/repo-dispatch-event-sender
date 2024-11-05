@@ -1,4 +1,3 @@
-
 # Repo Dispatch Event Sender
 
 English | [日本語](README-ja.md)
@@ -71,14 +70,14 @@ The project uses environment variables to create the payloads sent to the GitHub
 > [!NOTE]
 > Please ensure the following **environment variables** are set beforehand.
 
-| Input             | Description                                                                                  | Required |
-|-------------------|----------------------------------------------------------------------------------------------|----------|
-| `REPOSITORY_NAME` | The name of the target repository (e.g., 'yourusername/yourrepo')                            | Yes      |
-| `EVENT_TYPE`      | The type of event to trigger (e.g., 'test_workflow')                                         | Yes      |
-| `OS_LIST`         | A space-separated list of target OS versions (e.g., 'ubuntu-latest macos-13 windows-latest') | Yes      |
-| `PYTHON_VERSIONS` | A space-separated list of Python versions (e.g., '3.11 3.12')                                | Yes      |
-| `GHPAGES_BRANCH`  | The GitHub Pages branch (default is 'gh_pages')                                              | No       |
-| `CUSTOM_PARAM`    | Custom parameters for the payload (optional)                                                 | No       |
+| Input             | Description                                                                                | Required |
+|-------------------|--------------------------------------------------------------------------------------------|----------|
+| `REPOSITORY_NAME` | The name of the target repository (e.g., 'yourusername/yourrepo')                          | Yes      |
+| `EVENT_TYPE`      | The type of event to trigger (e.g., 'test_workflow')                                       | Yes      |
+| `OS_LIST`         | A comma-separated list of OS in brackets (e.g., '[ubuntu-latest,macos-13,windows-latest]')   | Yes      |
+| `PYTHON_VERSIONS` | A comma-separated list of Python versions in brackets (e.g., '[3.11,3.12]')                  | Yes      |
+| `GHPAGES_BRANCH`  | The GitHub Pages branch (default is 'gh_pages')                                            | No       |
+| `CUSTOM_PARAM`    | Custom parameters for the payload (optional)                                               | No       |
 
 #### How to Use
 
@@ -116,8 +115,8 @@ jobs:
           repository_name: '7rikazhexde/repo-dispatch-event-sender'
           event_type: 'repo-dispatch-event-receive'
           ghpages_branch: 'ghpages'  # Option 1
-          os_list: 'ubuntu-latest macos-13 windows-latest'
-          python_versions: '3.11 3.12'
+          os_list: '[ubuntu-latest,macos-13,windows-latest]'
+          python_versions: '[3.11,3.12]'
           custom_param: 'custom_param_test_val'  # Option 2
         env:
           #GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Option 3

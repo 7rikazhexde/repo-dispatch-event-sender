@@ -30,7 +30,9 @@ def get_test_command(report_type: str) -> str:
     else:
         raise ValueError(f"Unsupported report type: {report_type}")
 
-    full_command = f"{base_command} {cov_report} --cov=repo_dispatch_event_sender tests/"
+    full_command = (
+        f"{base_command} {cov_report} --cov=repo_dispatch_event_sender tests/"
+    )
 
     if platform.system() == "Windows":
         print(f"system/OS is {platform.system()}")

@@ -20,13 +20,15 @@ inputs:
     required: false
     default: 'gh-pages'
   os_list:
-    description: 'Space-separated list of OS to run tests on'
+    description: 'Comma-separated list of OS in brackets'
     required: true
-    default: 'ubuntu-latest macos-13 windows-latest'
+    default: '[ubuntu-latest,macos-13,windows-latest]'
+    type: string
   python_versions:
-    description: 'Space-separated list of Python versions to test'
+    description: 'Comma-separated list of Python versions in brackets'
     required: true
-    default: '3.11 3.12'
+    default: '[3.11,3.12]'
+    type: string
   custom_param:
     description: 'An optional custom parameter for additional configuration'
     required: false
