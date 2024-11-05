@@ -22,5 +22,5 @@ jobs:
           os_list: '[ubuntu-latest,macos-13,windows-latest]'
           version_list: '[3.11,3.12]'
         env:
-          #GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Must Allow "Read and write permissions" from Workflow permissions
-          GH_TOKEN: ${{ secrets.PAT_FOR_PUSHES }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Must Allow "Read and write permissions" from Workflow permissions
+          #GH_TOKEN: ${{ secrets.PAT_FOR_PUSHES }}
