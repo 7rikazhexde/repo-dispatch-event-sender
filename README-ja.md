@@ -29,6 +29,9 @@
 - [repository_dispatch](https://docs.github.com/ja/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#repository_dispatch) webhookイベントのトリガーはPythonコマンドとGitHub Actionsのアクションコンポーネントで実行できます。
 - 複数の環境や、OSおよびPythonバージョンのカスタマイズをサポートします。(現状はバージョンはPythonのみサポート)
 
+> [!IMPORTANT]
+> repository_dispatch イベントは mainブランチへのpushトリガーでは動作しますが、プルリクエストイベントではトリガーされない という仕様があります。プルリクエストイベントで repository_dispatch イベントを使用することはできませんので、注意が必要です。詳細については、[GitHubの公式ドキュメント](https://docs.github.com/ja/actions/writing-workflows/choosing-when-your-workflow-runs/triggering-a-workflow#triggering-a-workflow-from-a-workflow)をご確認ください。
+
 ## 使用条件
 
 ### 必須
