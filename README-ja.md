@@ -119,23 +119,29 @@ jobs:
           version_list: '[3.11,3.12]'
           custom_param: 'custom_param_test_val'  # オプション2
         env:
-          #GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # オプション3
-          GH_TOKEN: ${{ secrets.YOURT_GHA_PAT }} # オプション3
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # オプション3
+          #GH_TOKEN: ${{ secrets.YOURT_GHA_PAT }} # オプション3
 ```
 
 > [!NOTE]
-> オプション1:\
+> **オプション1:**\
 > デフォルト値(`'gh_pages'`)と異なるブランチ名を指定する場合はその値でペイロードを作成します。\
 > 省略した場合はデフォルト値(`'gh_pages'`)でペイロードを作成します。  
 >
-> オプション2:\
+> **オプション2:**\
 > 省略可能です。省略した場合はペイロードに含まれません。
 
 > [!IMPORTANT]
-> オプション3:\
-> repo権限を付与した`PAT`の設定が必要です。\
-> もし、`GITHUB_TOKEN`を使用する場合はActions -> Workflow permissions から、**Read and write permissions**を有効にする必要があります。\
-> ワークフロー利用時はセキュリティの観点から`PAT`を使用することを推奨します。
+> **オプション3:**\
+>\
+> `GITHUB_TOKEN`:\
+> GitHub Actions で自動的に発行されるトークンで、リポジトリへのアクセス権を持ちます。\
+> GITHUB_TOKEN を使用する場合は、Actions -> Workflow permissions から Read and write permissions を有効にしてください。\
+> セキュリティの観点から、`GITHUB_TOKEN` の使用が推奨されます。\
+>\
+> `Personal Access Token (PAT)`:\
+> `GITHUB_TOKEN` では対応できない操作が必要な場合は、リポジトリ権限を付与した `PAT` を設定する必要があります。\
+> `PAT` は適切に管理し、漏洩リスクを防ぐよう注意してください。
 
 #### ワークフローの実例
 
