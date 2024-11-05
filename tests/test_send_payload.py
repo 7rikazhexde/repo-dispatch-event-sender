@@ -21,14 +21,14 @@ def test_build_payload_with_bracket_array(caplog: pytest.LogCaptureFixture) -> N
     data: Dict[str, Any] = {
         "repository_name": "example-repo",
         "event_type": "test_workflow",
-        "python_versions": "[3.10,3.11,3.12]",
+        "version_list": "[3.10,3.11,3.12]",
         "os_list": "[ubuntu-latest,macos-latest,windows-latest]",
     }
     expected_cmd = (
         "gh api repos/example-repo/dispatches -f event_type=test_workflow "
-        "-f client_payload[python_versions][]=3.10 "
-        "-f client_payload[python_versions][]=3.11 "
-        "-f client_payload[python_versions][]=3.12 "
+        "-f client_payload[version_list][]=3.10 "
+        "-f client_payload[version_list][]=3.11 "
+        "-f client_payload[version_list][]=3.12 "
         "-f client_payload[os_list][]=ubuntu-latest "
         "-f client_payload[os_list][]=macos-latest "
         "-f client_payload[os_list][]=windows-latest"
@@ -44,12 +44,12 @@ def test_build_payload_with_single_item_array(caplog: pytest.LogCaptureFixture) 
     data: Dict[str, Any] = {
         "repository_name": "example-repo",
         "event_type": "test_workflow",
-        "python_versions": "[3.10]",
+        "version_list": "[3.10]",
         "os_list": "[ubuntu-latest]",
     }
     expected_cmd = (
         "gh api repos/example-repo/dispatches -f event_type=test_workflow "
-        "-f client_payload[python_versions][]=3.10 "
+        "-f client_payload[version_list][]=3.10 "
         "-f client_payload[os_list][]=ubuntu-latest"
     )
 
@@ -63,7 +63,7 @@ def test_build_payload_with_empty_array(caplog: pytest.LogCaptureFixture) -> Non
     data: Dict[str, Any] = {
         "repository_name": "example-repo",
         "event_type": "test_workflow",
-        "python_versions": "[]",
+        "version_list": "[]",
         "os_list": "[]",
     }
     expected_cmd = "gh api repos/example-repo/dispatches -f event_type=test_workflow"
@@ -79,12 +79,12 @@ def test_build_payload_with_custom_param(caplog: pytest.LogCaptureFixture) -> No
         "repository_name": "example-repo",
         "event_type": "test_workflow",
         "custom_param": "custom_value",
-        "python_versions": "[3.10]",
+        "version_list": "[3.10]",
     }
     expected_cmd = (
         "gh api repos/example-repo/dispatches -f event_type=test_workflow "
         "-f client_payload[custom_param]=custom_value "
-        "-f client_payload[python_versions][]=3.10"
+        "-f client_payload[version_list][]=3.10"
     )
 
     with caplog.at_level(logging.INFO):
@@ -97,13 +97,13 @@ def test_build_payload_with_list_input(caplog: pytest.LogCaptureFixture) -> None
     data: Dict[str, Any] = {
         "repository_name": "example-repo",
         "event_type": "test_workflow",
-        "python_versions": ["3.10", "3.11"],
+        "version_list": ["3.10", "3.11"],
         "os_list": ["ubuntu-latest"],
     }
     expected_cmd = (
         "gh api repos/example-repo/dispatches -f event_type=test_workflow "
-        "-f client_payload[python_versions][]=3.10 "
-        "-f client_payload[python_versions][]=3.11 "
+        "-f client_payload[version_list][]=3.10 "
+        "-f client_payload[version_list][]=3.11 "
         "-f client_payload[os_list][]=ubuntu-latest"
     )
 
@@ -117,13 +117,13 @@ def test_build_payload_with_whitespace(caplog: pytest.LogCaptureFixture) -> None
     data: Dict[str, Any] = {
         "repository_name": "example-repo",
         "event_type": "test_workflow",
-        "python_versions": "[ 3.10, 3.11 ]",
+        "version_list": "[ 3.10, 3.11 ]",
         "os_list": "[ubuntu-latest, macos-latest]",
     }
     expected_cmd = (
         "gh api repos/example-repo/dispatches -f event_type=test_workflow "
-        "-f client_payload[python_versions][]=3.10 "
-        "-f client_payload[python_versions][]=3.11 "
+        "-f client_payload[version_list][]=3.10 "
+        "-f client_payload[version_list][]=3.11 "
         "-f client_payload[os_list][]=ubuntu-latest "
         "-f client_payload[os_list][]=macos-latest"
     )
@@ -169,7 +169,7 @@ def test_main_with_all_variables(
             "EVENT_TYPE": "test_workflow",
             "GHPAGES_BRANCH": "custom-branch",
             "OS_LIST": "[ubuntu-latest,macos-latest]",
-            "PYTHON_VERSIONS": "[3.10,3.11,3.12]",
+            "VERSION_LIST": "[3.10,3.11,3.12]",
             "CUSTOM_PARAM": "custom_value",
         }.get(key),
     )
@@ -184,9 +184,9 @@ def test_main_with_all_variables(
         "-f client_payload[ghpages_branch]=custom-branch "
         "-f client_payload[os_list][]=ubuntu-latest "
         "-f client_payload[os_list][]=macos-latest "
-        "-f client_payload[python_versions][]=3.10 "
-        "-f client_payload[python_versions][]=3.11 "
-        "-f client_payload[python_versions][]=3.12 "
+        "-f client_payload[version_list][]=3.10 "
+        "-f client_payload[version_list][]=3.11 "
+        "-f client_payload[version_list][]=3.12 "
         "-f client_payload[custom_param]=custom_value"
     )
 

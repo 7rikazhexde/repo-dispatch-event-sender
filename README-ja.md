@@ -75,7 +75,7 @@ pip install requirement.txt requirement-dev.txt
 | `REPOSITORY_NAME` | 対象リポジトリの名前 (例: `yourusername/yourrepo`)                              | Yes    |
 | `EVENT_TYPE`      | トリガーするイベントの種類 (例: `test_workflow`)                                 | Yes    |
 | `OS_LIST`         | ブラケット形式のカンマ区切りOS一覧 (例: '[ubuntu-latest,macos-13,windows-latest]') | Yes    |
-| `PYTHON_VERSIONS` | ブラケット形式のカンマ区切りPythonバージョン一覧 (例: '[3.11,3.12]')               | Yes    |
+| `VERSION_LIST` | ブラケット形式のカンマ区切りPythonバージョン一覧 (例: Pythonの場合: '[3.11,3.12]')               | Yes    |
 | `GHPAGES_BRANCH`  | GitHub Pagesブランチ (デフォルトは `gh_pages`)                                  | No     |
 | `CUSTOM_PARAM`    | ペイロードのカスタムパラメータ（オプション）                                      | No     |
 
@@ -116,7 +116,7 @@ jobs:
           event_type: 'repo-dispatch-event-receive'
           ghpages_branch: 'ghpages'  # オプション1
           os_list: '[ubuntu-latest,macos-13,windows-latest]'
-          python_versions: '[3.11,3.12]'
+          version_list: '[3.11,3.12]'
           custom_param: 'custom_param_test_val'  # オプション2
         env:
           #GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # オプション3

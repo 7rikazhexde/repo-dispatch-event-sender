@@ -27,8 +27,8 @@ inputs:
     required: true
     default: '[ubuntu-latest,macos-13,windows-latest]'
     type: string
-  python_versions:
-    description: 'Comma-separated list of Python versions in brackets'
+  version_list:
+    description: 'Comma-separated list of versions in brackets'
     required: true
     default: '[3.11,3.12]'
     type: string
@@ -58,5 +58,5 @@ runs:
         EVENT_TYPE: ${{ inputs.event_type }}
         GHPAGES_BRANCH: ${{ inputs.ghpages_branch }} # (*2)
         OS_LIST: ${{ inputs.os_list }}
-        PYTHON_VERSIONS: ${{ inputs.python_versions }}
+        VERSION_LIST: ${{ inputs.version_list }}
         CUSTOM_PARAM: ${{ inputs.custom_param }} # (*2)
