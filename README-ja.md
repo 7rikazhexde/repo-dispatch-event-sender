@@ -1,6 +1,6 @@
 # Repo Dispatch Event Sender
 
-[![Run Tests Multi-OS](https://github.com/7rikazhexde/repo-dispatch-event-sender/actions/workflows/receive_payload_to_pytest.yml/badge.svg)](https://github.com/7rikazhexde/repo-dispatch-event-sender/actions/workflows/receive_payload_to_pytest.yml)
+[![Run Tests Multi-OS](https://github.com/7rikazhexde/repo-dispatch-event-sender/actions/workflows/receive_payload_to_pytest.yml/badge.svg)](https://github.com/7rikazhexde/repo-dispatch-event-sender/actions/workflows/receive_payload_to_pytest.yml) [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Repo%20Dispatch%20Event%20Sender-green?colorA=24292e&colorB=3fb950&logo=github)](https://github.com/marketplace/actions/repo-dispatch-event-sender)
 
 [English](README.md) | 日本語
 
@@ -22,6 +22,8 @@
       - [使用方法](#使用方法-1)
     - [ワークフロー向け](#ワークフロー向け)
       - [ワークフローの実例](#ワークフローの実例)
+        - [ペイロードの送信: send\_payload\_to\_pytest.yml](#ペイロードの送信-send_payload_to_pytestyml)
+        - [ペイロードの受信: receive\_payload\_to\_pytest.yml](#ペイロードの受信-receive_payload_to_pytestyml)
   - [ライセンス](#ライセンス)
 
 ## 機能
@@ -150,7 +152,9 @@ jobs:
 
 #### ワークフローの実例
 
-[send_payload_to_pytest_testmon.yml](https://github.com/7rikazhexde/python-project-sandbox/blob/main/.github/workflows/send_payload_to_pytest_testmon.yml)
+##### ペイロードの送信: [send_payload_to_pytest.yml](https://github.com/7rikazhexde/repo-dispatch-event-sender/blob/main/.github/workflows/send_payload_to_pytest.yml)
+
+##### ペイロードの受信: [receive_payload_to_pytest.yml](https://github.com/7rikazhexde/repo-dispatch-event-sender/blob/main/.github/workflows/receive_payload_to_pytest.yml)
 
 ## ライセンス
 

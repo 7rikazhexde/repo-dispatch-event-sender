@@ -1,6 +1,6 @@
 # Repo Dispatch Event Sender
 
-[![Run Tests Multi-OS](https://github.com/7rikazhexde/repo-dispatch-event-sender/actions/workflows/receive_payload_to_pytest.yml/badge.svg)](https://github.com/7rikazhexde/repo-dispatch-event-sender/actions/workflows/receive_payload_to_pytest.yml)
+[![Run Tests Multi-OS](https://github.com/7rikazhexde/repo-dispatch-event-sender/actions/workflows/receive_payload_to_pytest.yml/badge.svg)](https://github.com/7rikazhexde/repo-dispatch-event-sender/actions/workflows/receive_payload_to_pytest.yml) [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Repo%20Dispatch%20Event%20Sender-green?colorA=24292e&colorB=3fb950&logo=github)](https://github.com/marketplace/actions/repo-dispatch-event-sender)
 
 English | [日本語](README-ja.md)
 
@@ -22,6 +22,8 @@ English | [日本語](README-ja.md)
       - [How to Use](#how-to-use)
     - [For Workflow Use](#for-workflow-use)
       - [Example workflow](#example-workflow)
+        - [Send payload workflow: send\_payload\_to\_pytest.yml](#send-payload-workflow-send_payload_to_pytestyml)
+        - [Receive payload workflow: receive\_payload\_to\_pytest.yml](#receive-payload-workflow-receive_payload_to_pytestyml)
   - [License](#license)
 
 ## Features
@@ -149,7 +151,9 @@ jobs:
 
 #### Example workflow
 
-[send_payload_to_pytest_testmon.yml](https://github.com/7rikazhexde/python-project-sandbox/blob/main/.github/workflows/send_payload_to_pytest_testmon.yml)
+##### Send payload workflow: [send_payload_to_pytest.yml](https://github.com/7rikazhexde/repo-dispatch-event-sender/blob/main/.github/workflows/send_payload_to_pytest.yml)
+
+##### Receive payload workflow: [receive_payload_to_pytest.yml](https://github.com/7rikazhexde/repo-dispatch-event-sender/blob/main/.github/workflows/receive_payload_to_pytest.yml)
 
 ## License
 
