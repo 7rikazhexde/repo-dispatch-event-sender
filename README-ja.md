@@ -27,7 +27,7 @@
 ## 機能
 
 - [repository_dispatch](https://docs.github.com/ja/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#repository_dispatch) webhookイベントのトリガーはPythonコマンドとGitHub Actionsのアクションコンポーネントで実行できます。
-- 複数の環境や、OSおよびPythonバージョンのカスタマイズをサポートします。(現状はバージョンはPythonのみサポート)
+- `os`や`version`などのペイロードをサポートします。
 
 > [!IMPORTANT]
 > repository_dispatch イベントは mainブランチへのpushトリガーでは動作しますが、プルリクエストイベントではトリガーされない という仕様があります。プルリクエストイベントで repository_dispatch イベントを使用することはできませんので、注意が必要です。詳細については、[GitHubの公式ドキュメント](https://docs.github.com/ja/actions/writing-workflows/choosing-when-your-workflow-runs/triggering-a-workflow#triggering-a-workflow-from-a-workflow)をご確認ください。
@@ -75,14 +75,14 @@ pip install requirement.txt requirement-dev.txt
 > [!NOTE]
 > 事前に以下の**環境変数**を設定してください。
 
-| 入力項目           | 説明                                                                           |Required|
-|-------------------|--------------------------------------------------------------------------------|--------|
-| `REPOSITORY_NAME` | 対象リポジトリの名前 (例: `yourusername/yourrepo`)                              | Yes    |
-| `EVENT_TYPE`      | トリガーするイベントの種類 (例: `test_workflow`)                                 | Yes    |
-| `OS_LIST`         | ブラケット形式のカンマ区切りOS一覧 (例: '[ubuntu-latest,macos-13,windows-latest]') | Yes    |
-| `VERSION_LIST` | ブラケット形式のカンマ区切りPythonバージョン一覧 (例: Pythonの場合: '[3.11,3.12]')               | Yes    |
-| `GHPAGES_BRANCH`  | GitHub Pagesブランチ (デフォルトは `gh_pages`)                                  | No     |
-| `CUSTOM_PARAM`    | ペイロードのカスタムパラメータ（オプション）                                      | No     |
+| 入力項目           | 説明                                                   |Required|
+|-------------------|--------------------------------------------------------|--------|
+| `REPOSITORY_NAME` | 対象リポジトリの名前 (例: `yourusername/yourrepo`)       | Yes    |
+| `EVENT_TYPE`      | トリガーするイベントの種類 (例: `test_workflow`)          | Yes    |
+| `OS_LIST`         | OS一覧 (例: '[ubuntu-latest,macos-13,windows-latest]')  | Yes    |
+| `VERSION_LIST`    | バージョン一覧 (例: Pythonの場合: '[3.11,3.12,3.13]')    | Yes    |
+| `GHPAGES_BRANCH`  | GitHub Pagesブランチ (デフォルトは `gh_pages`)           | No     |
+| `CUSTOM_PARAM`    | ペイロードのカスタムパラメータ（オプション）               | No     |
 
 #### 使用方法
 
