@@ -14,13 +14,13 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: Send Payload to Pytest
-        #uses: 7rikazhexde/repo-dispatch-event-sender@main
-        uses: ./
+        uses: 7rikazhexde/repo-dispatch-event-sender@main
+        #uses: ./
         with:
           repository_name: '7rikazhexde/repo-dispatch-event-sender'
           event_type: 'send_payload_to_pytest'
           os_list: '[ubuntu-latest,macos-13,windows-latest]'
-          version_list: '[3.11,3.12]'
+          version_list: '[3.10,3.11,3.12,3.13]'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Must Allow "Read and write permissions" from Workflow permissions
           #GH_TOKEN: ${{ secrets.PAT_FOR_PUSHES }}
