@@ -29,6 +29,9 @@ English | [日本語](README-ja.md)
 - Triggers [repository_dispatch](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#repository_dispatch) webhook events via Python commands and GitHub Actions components.
 - Supports multiple environments with customization options for OS and Python versions. (Currently, only Python versions are supported.)
 
+> [!IMPORTANT]
+> The repository_dispatch event works with push triggers to the main branch, but it does not trigger on pull request events. Therefore, please be aware that the repository_dispatch event cannot be used with pull request events. For more details, please refer to the [official GitHub documentation](https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/triggering-a-workflow#triggering-a-workflow-from-a-workflow).
+
 ## Requirements
 
 ### Mandatory
