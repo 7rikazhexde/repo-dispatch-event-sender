@@ -44,7 +44,7 @@ runs:
     - name: Set up Python
       uses: actions/setup-python@v5.2.0
       with:
-        python-version: '3.12'
+        python-version: '3.13'
 
     - name: Run Python script
       # Environment Variable Setting Conditions
