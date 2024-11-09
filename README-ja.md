@@ -52,7 +52,7 @@
 #### プロジェクトをクローンする
 
 ```bash
-git clone https://github.com/yourusername/repo-dispatch-event-sender.git
+git clone https://github.com/7rikazhexde/repo-dispatch-event-sender.git
 cd repo-dispatch-event-sender
 ```
 
