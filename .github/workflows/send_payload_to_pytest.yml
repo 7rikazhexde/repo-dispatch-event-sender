@@ -4,11 +4,20 @@ on:
   push:
     branches:
       - 'main'
+    paths:
+      - 'repo_dispatch_event_sender/**'
+      - 'tests/**'
+      - 'poetry.lock'
 
 jobs:
   test-and-send-dispatch:
     if: github.actor != 'dependabot[bot]' && !startsWith(github.event.head_commit.message, 'Bump version') && !startsWith(github.event.head_commit.message, '[skip ci]')
     runs-on: ubuntu-latest
+    permissions:
+      # Enable code checkout
+      contents: write
+      # Enable repository_dispatch triggers
+      actions: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.2.2
