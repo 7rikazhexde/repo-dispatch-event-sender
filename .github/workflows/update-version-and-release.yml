@@ -33,9 +33,9 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.PAT_FOR_PUSHES }}
       - name: Set up Python
-        uses: actions/setup-python@v5.2.0
+        uses: actions/setup-python@v5.3.0
         with:
-          python-version: '3.13'
+          python-version: '3.12'
       - name: Install poetry
         run: |
           python -m pip install --upgrade pip
@@ -84,4 +84,4 @@ jobs:
           draft: false
           prerelease: false
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_FOR_PUSHES }}
