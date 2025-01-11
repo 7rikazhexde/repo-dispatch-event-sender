@@ -39,14 +39,25 @@ repos:
         verbose: true
       - id: poetry-lock
         verbose: true
+
+  - repo: local
+    hooks:
       - id: poetry-export
-        args: ["-f", "requirements.txt", "-o", "requirements.txt", "--without-hashes"]
-        verbose: true
-        files: ^pyproject\.toml$
-      - id: poetry-export
-        args: ["--with", "dev", "-f", "requirements.txt", "-o", "requirements-dev.txt", "--without-hashes"]
-        verbose: true
-        files: ^pyproject\.toml$
+        name: Export requirements.txt
+        entry: poetry export -f requirements.txt -o requirements.txt --without-hashes
+        language: python
+        pass_filenames: false
+        additional_dependencies:
+          - "poetry"
+          - "poetry-plugin-export"
+      - id: poetry-export-dev
+        name: Export dev requirements.txt
+        entry: poetry export --with dev -f requirements.txt -o requirements-dev.txt --without-hashes
+        language: python
+        pass_filenames: false
+        additional_dependencies:
+          - "poetry"
+          - "poetry-plugin-export"
 
   # Reference: https://github.com/DavidAnson/markdownlint-cli2#overview
   # > markdownlint-cli is a traditional command-line interface for markdownlint.
