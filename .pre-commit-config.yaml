@@ -3,7 +3,7 @@ fail_fast: true
 # A list of repository mappings
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       # Remove spaces at end of lines except markdown
       - id: trailing-whitespace
@@ -21,7 +21,7 @@ repos:
 
   # https://github.com/shellcheck-py/shellcheck-py?tab=readme-ov-file#usage
   - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.10.0.1
+    rev: v0.11.0.1
     hooks:
       - id: shellcheck
 
@@ -68,7 +68,7 @@ repos:
         args: ["--config", ".markdownlint.json", "README.md"]
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.12.8
+    rev: v0.12.9
     hooks:
       - id: ruff
         args: ["--fix","repo_dispatch_event_sender"]
