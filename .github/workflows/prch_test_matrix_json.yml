@@ -19,7 +19,7 @@ name: PR Check (Except Dependabot)
 # 13. テスト結果の確認と警告の表示
 # 14. ジョブサマリーの作成
 # 15. 全テストの結果確認
-# 16. LINE通知の送信
+# 16. Disord通知の送信
 
 on:
   pull_request:
@@ -144,9 +144,9 @@ jobs:
           echo -e ${{ steps.coverageComment.outputs.summaryReport }} >> "$GITHUB_STEP_SUMMARY"
 
   check_all_tests:
-    needs: run_tests
-    runs-on: ubuntu-latest
-    if: github.actor != 'dependabot[bot]' && !startsWith(github.event.pull_request.title, 'Bump version')
+    needs: [set_variables, run_tests]
+    #runs-on: ubuntu-latest
+    runs-on: ${{ fromJson(needs.set_variables.outputs.os)[0] }}
     steps:
       - name: Check test results
         if: contains(needs.run_tests.result, 'failure')
@@ -155,20 +155,52 @@ jobs:
           exit 1
 
   send_notification:
-    needs: [run_tests, check_all_tests]
-    runs-on: ubuntu-latest
+    needs: [set_variables, run_tests, check_all_tests]
+    #runs-on: ubuntu-latest
+    runs-on: ${{ fromJson(needs.set_variables.outputs.os)[0] }}
+    if: github.actor != 'dependabot[bot]' && !startsWith(github.event.pull_request.title, 'Bump version')
     steps:
-      # https://docs.github.com/ja/actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-an-environment
-      - name: Send LINE Notify
+      - name: Send Discord Notification
         env:
-          LINE_NOTIFY_TOKEN: ${{ secrets.LINE_ACCESS_TOKEN }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          WORKFLOW_ACTOR: ${{ github.actor }}
         run: |
-          status="${{ contains(needs.run_tests.result, 'failure') && 'FAILED' || 'SUCCESS' }}"
-          message="'pullrequest_check.yml' workflow completed with status: $status
+          workflow_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          status="${{ contains(needs.run_tests.result, 'failure') && 'FAILED ❌' || 'SUCCESS ✅' }}"
 
-          Check URL:
-          https://github.com/7rikazhexde/python-project-sandbox/actions/workflows/pullrequest_check.yml"
+          message="## PR Check Completed
 
-          curl -X POST https://notify-api.line.me/api/notify \
-            -H "Authorization: Bearer $LINE_NOTIFY_TOKEN" \
-            -F "message=${message}"
+          ### Workflow Information
+          • **Name:** ${{ github.workflow }}
+          • **Status:** ${status}
+          • **Run:** [View Details]($workflow_url)
+          • **PR Title:** ${PR_TITLE}
+          • **Actor:** ${WORKFLOW_ACTOR}"
+
+          timestamp="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          json_payload=$(jq -n \
+            --arg title "${{ github.workflow }} - PR Check Status" \
+            --arg description "$message" \
+            --argjson color "${{ contains(needs.run_tests.result, 'failure') && '16711680' || '65280' }}" \
+            --arg timestamp "$timestamp" \
+            '{
+              "embeds": [
+                {
+                  "title": $title,
+                  "description": $description,
+                  "color": $color,
+                  "timestamp": $timestamp
+                }
+              ]
+            }')
+
+          # Validate the Discord webhook URL
+          if [[ ! $DISCORD_WEBHOOK_URL =~ ^https://discord(app)?.com/api/webhooks/ ]]; then
+            echo "Error: Invalid Discord webhook URL format. Please check your secret configuration."
+            exit 1
+          fi
+
+          curl -X POST -H "Content-Type: application/json" \
+            -d "$json_payload" \
+            "$DISCORD_WEBHOOK_URL"
