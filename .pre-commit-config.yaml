@@ -26,7 +26,7 @@ repos:
       - id: shellcheck
 
   - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.10
+    rev: v1.7.11
     hooks:
       - id: actionlint
 
@@ -68,7 +68,7 @@ repos:
         args: ["--config", ".markdownlint.json", "README.md"]
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.15.1
+    rev: v0.15.2
     hooks:
       - id: ruff
         args: ["--fix","repo_dispatch_event_sender"]
