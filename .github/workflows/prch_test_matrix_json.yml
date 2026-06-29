@@ -84,7 +84,7 @@ jobs:
       - name: Install poetry
         run: pip install poetry
       - name: Cache dependencies
-        uses: actions/cache@v6.0.0
+        uses: actions/cache@v6.1.0
         with:
           path: ~/.cache/pypoetry
           key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
@@ -117,7 +117,7 @@ jobs:
           fi
       - name: Pytest coverage comment
         id: coverageComment
-        uses: MishaKav/pytest-coverage-comment@v1.7.2
+        uses: MishaKav/pytest-coverage-comment@v1.8.0
         with:
           pytest-coverage-path: ./pytest-coverage.txt
           pytest-xml-coverage-path: ./coverage.xml
