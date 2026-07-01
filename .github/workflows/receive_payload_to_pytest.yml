@@ -34,7 +34,7 @@ jobs:
           echo "Poetry version: $(poetry --version)"
 
       - name: Cache dependencies
-        uses: actions/cache@v6.0.0
+        uses: actions/cache@v6.1.0
         with:
           path: ~/.cache/pypoetry
           key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
