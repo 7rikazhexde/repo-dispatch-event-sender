@@ -28,7 +28,7 @@ SUPPORTED_KEYS = {
 ARRAY_KEYS = {"os_list", "version_list"}
 
 # Default values to be skipped in the payload if no user-defined values are provided
-DEFAULT_VALUES = {"custom_param": "default_value", "ghpages_branch": "gh_pages"}
+DEFAULT_VALUES = {"custom_param": "default_value", "ghpages_branch": "gh-pages"}
 
 
 def parse_array_input(value: str) -> List[str]:
