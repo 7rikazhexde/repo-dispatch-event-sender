@@ -28,23 +28,18 @@ jobs:
           timezoneMacos: "Asia/Tokyo"
           timezoneWindows: "Tokyo Standard Time"
 
-      - name: Install poetry
-        run: |
-          pip install poetry
-          echo "Poetry version: $(poetry --version)"
-
-      - name: Cache dependencies
-        uses: actions/cache@v6.1.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.3.3
         with:
-          path: ~/.cache/pypoetry
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
-
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
       - name: Install dependencies
         run: |
-          poetry install
+          uv sync --locked
           echo "Installed dependencies:"
-          poetry show --tree
+          uv tree
 
       - name: Run tests
         run: |
-          poetry run pytest
+          uv run pytest

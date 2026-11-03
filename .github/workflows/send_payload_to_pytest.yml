@@ -7,7 +7,7 @@ on:
     paths:
       - 'repo_dispatch_event_sender/**'
       - 'tests/**'
-      - 'poetry.lock'
+      - 'uv.lock'
 
 jobs:
   test-and-send-dispatch:
@@ -29,7 +29,7 @@ jobs:
           repository_name: '7rikazhexde/repo-dispatch-event-sender'
           event_type: 'send_payload_to_pytest'
           os_list: '[ubuntu-latest,macos-13,windows-latest]'
-          version_list: '[3.10,3.11,3.12,3.13]'
+          version_list: '[3.11,3.12,3.13]'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Must Allow "Read and write permissions" from Workflow permissions
           #GH_TOKEN: ${{ secrets.PAT_FOR_PUSHES }}

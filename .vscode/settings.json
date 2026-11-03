@@ -42,7 +42,7 @@
     // unittestフレームワークを無効にする設定です。
     // VSCodeでは複数のテストフレームワークをサポートしていますが、この設定によりunittestが使われないようにします。
     "python.testing.unittestEnabled": false,
-    // VSCodeがテストフレームワークとしてpytestを使用するように設定されます。p
-    // ytestを使ってテストを検出し、実行することになります。
+    // VSCodeがテストフレームワークとしてpytestを使用するように設定されます。
+    // pytestを使ってテストを検出し、実行することになります。
     "python.testing.pytestEnabled": true
 }

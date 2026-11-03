@@ -138,7 +138,7 @@ def test_build_payload_skips_default_values(caplog: pytest.LogCaptureFixture) ->
     data: Dict[str, Any] = {
         "repository_name": "example-repo",
         "event_type": "test_workflow",
-        "ghpages_branch": "gh_pages",
+        "ghpages_branch": "gh-pages",
         "custom_param": "default_value",
     }
     expected_cmd = "gh api repos/example-repo/dispatches -f event_type=test_workflow"
