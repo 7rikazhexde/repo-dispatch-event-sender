@@ -10,7 +10,7 @@ name: PR Check (Except Dependabot)
 # 4. Python環境のセットアップ (3.11, 3.12)
 # 5. タイムゾーンの設定 (Asia/Tokyo)
 # 6. リポジトリのチェックアウト
-# 7. Poetry のインストール
+# 7. uv のインストール
 # 8. 依存関係のキャッシュ
 # 9. プロジェクト依存関係のインストール
 # 10. テストの実行とカバレッジの計算
@@ -19,7 +19,7 @@ name: PR Check (Except Dependabot)
 # 13. テスト結果の確認と警告の表示
 # 14. ジョブサマリーの作成
 # 15. 全テストの結果確認
-# 16. Disord通知の送信
+# 16. Discord通知の送信
 
 on:
   pull_request:
@@ -81,25 +81,24 @@ jobs:
           echo "System date: $(date)"
           echo "TZ environment variable: $TZ"
           python -c "import datetime, platform; print(f'Python timezone: {datetime.datetime.now().astimezone().tzinfo}'); print(f'OS: {platform.system()}')"
-      - name: Install poetry
-        run: pip install poetry
-      - name: Cache dependencies
-        uses: actions/cache@v6.1.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.3.3
         with:
-          path: ~/.cache/pypoetry
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
       - name: Install dependencies
-        run: poetry install
+        run: uv sync --locked
       - name: Run test
         id: pytest
         shell: bash
         # Mac / Linux
-        # run: poetry run pytest --durations=0 --junitxml=pytest.xml --cov-report xml:coverage.xml --cov=project_a tests/ | tee pytest-coverage.txt
-        # Windowss
-        # run: poetry run pytest --durations=0 --junitxml=pytest.xml --cov-report xml:coverage.xml --cov=project_a tests/ | Tee-Object -FilePath pytest-coverage.txt
+        # run: uv run pytest --durations=0 --junitxml=pytest.xml --cov-report xml:coverage.xml --cov=project_a tests/ | tee pytest-coverage.txt
+        # Windows
+        # run: uv run pytest --durations=0 --junitxml=pytest.xml --cov-report xml:coverage.xml --cov=project_a tests/ | Tee-Object -FilePath pytest-coverage.txt
         run: |
-          poetry run task test_ci_xml
-          coverage_percentage=$(poetry run coverage report | grep TOTAL | awk '{print $NF}' | sed 's/%//')
+          uv run task test_ci_xml
+          coverage_percentage=$(uv run coverage report | grep TOTAL | awk '{print $NF}' | sed 's/%//')
           echo "Current coverage: $coverage_percentage%"
           echo "COVERAGE=$coverage_percentage" >> "$GITHUB_ENV"
       - name: Check coverage

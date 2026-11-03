@@ -10,7 +10,6 @@ repos:
         args: [--markdown-linebreak-ext=md]
       # Make the last line of the file a newline code
       - id: end-of-file-fixer
-        exclude: '^(requirements.txt|requirements-dev.txt)$'
       # Unify line break code to LF
       - id: mixed-line-ending
         args: [--fix=lf]
@@ -30,34 +29,11 @@ repos:
     hooks:
       - id: actionlint
 
-  # https://python-poetry.org/docs/pre-commit-hooks/#usage
-  - repo: https://github.com/python-poetry/poetry
-    # Cannot be executed with local designation (as of 24.8.3)
-    rev: 2.5.1
+  # https://docs.astral.sh/uv/guides/integration/pre-commit/
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.13.7
     hooks:
-      - id: poetry-check
-        verbose: true
-      - id: poetry-lock
-        verbose: true
-
-  #- repo: local
-  #  hooks:
-  #    - id: poetry-export
-  #      name: Export requirements.txt
-  #      entry: poetry export -f requirements.txt -o requirements.txt --without-hashes
-  #      language: python
-  #      pass_filenames: false
-  #      additional_dependencies:
-  #        - "poetry"
-  #        - "poetry-plugin-export"
-  #    - id: poetry-export-dev
-  #      name: Export dev requirements.txt
-  #      entry: poetry export --with dev -f requirements.txt -o requirements-dev.txt --without-hashes
-  #      language: python
-  #      pass_filenames: false
-  #      additional_dependencies:
-  #        - "poetry"
-  #        - "poetry-plugin-export"
+      - id: uv-lock
 
   # Reference: https://github.com/DavidAnson/markdownlint-cli2#overview
   # > markdownlint-cli is a traditional command-line interface for markdownlint.

@@ -38,12 +38,12 @@
 
 ### 必須
 
-- Python 3.10+
+- Python 3.11+
 - GitHub CLI (`gh`)
 
 ### 任意
 
-- [Poetry](https://python-poetry.org/)
+- [uv](https://docs.astral.sh/uv/)
 
 ## 使用方法
 
@@ -58,17 +58,14 @@ cd repo-dispatch-event-sender
 
 #### 依存関係をインストールする
 
-[Poetry](https://python-poetry.org/) がインストールされていることを確認し、以下を実行します。これにより、仮想環境が作成され、必要な依存関係がインストールされます。
+[uv](https://docs.astral.sh/uv/) がインストールされていることを確認し、以下を実行します。これにより、仮想環境が作成され、必要な依存関係がインストールされます。
 
 ```bash
-poetry install
+uv sync
 ```
 
-`venv`などの仮想環境を使用する場合は、下記で依存関係をインストールしてください。
-
-```bash
-pip install requirement.txt requirement-dev.txt
-```
+> [!NOTE]
+> スクリプト自体はPython標準ライブラリのみを使用しているため、依存関係をインストールせずに`python`で直接実行することもできます。
 
 #### 設定
 
@@ -83,7 +80,7 @@ pip install requirement.txt requirement-dev.txt
 | `EVENT_TYPE`      | トリガーするイベントの種類 (例: `test_workflow`)          | Yes    |
 | `OS_LIST`         | OS一覧 (例: '[ubuntu-latest,macos-13,windows-latest]')  | Yes    |
 | `VERSION_LIST`    | バージョン一覧 (例: Pythonの場合: '[3.11,3.12,3.13]')    | Yes    |
-| `GHPAGES_BRANCH`  | GitHub Pagesブランチ (デフォルトは `gh_pages`)           | No     |
+| `GHPAGES_BRANCH`  | GitHub Pagesブランチ (デフォルトは `gh-pages`)           | No     |
 | `CUSTOM_PARAM`    | ペイロードのカスタムパラメータ（オプション）               | No     |
 
 #### 使用方法
@@ -91,7 +88,7 @@ pip install requirement.txt requirement-dev.txt
 GitHubリポジトリディスパッチイベントをトリガーするには、以下のコマンドを実行します。
 
 ```bash
-poetry run python repo_dispatch_event_sender/src/dispatch/send_payload.py
+uv run python repo_dispatch_event_sender/src/dispatch/send_payload.py
 ```
 
 ### ワークフロー向け
@@ -127,13 +124,13 @@ jobs:
           custom_param: 'custom_param_test_val'  # オプション2
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # オプション3
-          #GH_TOKEN: ${{ secrets.YOURT_GHA_PAT }} # オプション3
+          #GH_TOKEN: ${{ secrets.YOUR_GHA_PAT }} # オプション3
 ```
 
 > [!NOTE]
 > **オプション1:**\
-> デフォルト値(`'gh_pages'`)と異なるブランチ名を指定する場合はその値でペイロードを作成します。\
-> 省略した場合はデフォルト値(`'gh_pages'`)でペイロードを作成します。  
+> デフォルト値(`'gh-pages'`)と異なるブランチ名を指定する場合はその値でペイロードを作成します。\
+> 省略した場合はデフォルト値(`'gh-pages'`)でペイロードを作成します。  
 >
 > **オプション2:**\
 > 省略可能です。省略した場合はペイロードに含まれません。

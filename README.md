@@ -38,12 +38,12 @@ English | [日本語](README-ja.md)
 
 ### Mandatory
 
-- Python 3.10+
+- Python 3.11+
 - GitHub CLI (`gh`)
 
 ### Optional
 
-- [Poetry](https://python-poetry.org/)
+- [uv](https://docs.astral.sh/uv/)
 
 ## Usage
 
@@ -58,17 +58,14 @@ cd repo-dispatch-event-sender
 
 #### Install Dependencies
 
-If [Poetry](https://python-poetry.org/) is installed, run the following to create a virtual environment and install all necessary dependencies:
+If [uv](https://docs.astral.sh/uv/) is installed, run the following to create a virtual environment and install all necessary dependencies:
 
 ```bash
-poetry install
+uv sync
 ```
 
-If you are using another virtual environment like `venv`, install dependencies with:
-
-```bash
-pip install -r requirements.txt requirements-dev.txt
-```
+> [!NOTE]
+> The script itself uses only the Python standard library, so it can also be run with plain `python` without installing any dependencies.
 
 #### Configuration
 
@@ -83,7 +80,7 @@ The project uses environment variables to create the payloads sent to the GitHub
 | `EVENT_TYPE`      | The type of event to trigger (e.g., 'test_workflow')                                       | Yes      |
 | `OS_LIST`         | A comma-separated list of OS in brackets (e.g., '[ubuntu-latest,macos-13,windows-latest]') | Yes      |
 | `VERSION_LIST`    | A comma-separated list of versions in brackets (e.g., for Python: '[3.11,3.12,3.13]')      | Yes      |
-| `GHPAGES_BRANCH`  | The GitHub Pages branch (default is 'gh_pages')                                            | No       |
+| `GHPAGES_BRANCH`  | The GitHub Pages branch (default is 'gh-pages')                                            | No       |
 | `CUSTOM_PARAM`    | Custom parameters for the payload (optional)                                               | No       |
 
 #### How to Use
@@ -91,7 +88,7 @@ The project uses environment variables to create the payloads sent to the GitHub
 To trigger the GitHub repository dispatch event, run the following command:
 
 ```bash
-poetry run python repo_dispatch_event_sender/src/dispatch/send_payload.py
+uv run python repo_dispatch_event_sender/src/dispatch/send_payload.py
 ```
 
 ### For Workflow Use
@@ -127,13 +124,13 @@ jobs:
           custom_param: 'custom_param_test_val'  # Option 2
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Option 3
-          #GH_TOKEN: ${{ secrets.YOURT_GHA_PAT }} # Option 3
+          #GH_TOKEN: ${{ secrets.YOUR_GHA_PAT }} # Option 3
 ```
 
 > [!NOTE]
 > **Option 1:**\
-> If you want to specify a branch name different from the default (`'gh_pages'`), use that value to create the payload.\
-> If omitted, the default value (`'gh_pages'`) will be used.  
+> If you want to specify a branch name different from the default (`'gh-pages'`), use that value to create the payload.\
+> If omitted, the default value (`'gh-pages'`) will be used.  
 >
 > **Option 2:**\
 > This is optional. If omitted, the custom parameter will not be included in the payload.
