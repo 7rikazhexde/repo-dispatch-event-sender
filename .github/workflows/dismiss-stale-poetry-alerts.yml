@@ -1,0 +1,60 @@
+name: Dismiss Stale poetry.lock Alerts
+
+# Why this exists:
+# GitHub's dependency graph kept a stale snapshot of poetry.lock after the Poetry->uv
+# migration (commit b29df17, PR #252, 2026-11-03) and keeps matching NEW security
+# advisories against that dead snapshot - there is no public-repo API/UI to purge a
+# stale manifest from the graph (confirmed via GraphQL: poetry.lock is still listed
+# as a dependency graph manifest although the file no longer exists on main).
+# So Dependabot can open alerts against a file that no longer exists.
+#
+# This workflow runs .github/scripts/dismiss-stale-poetry-alerts.sh, which:
+#   - auto-dismisses ONLY alerts whose manifest_path is exactly "poetry.lock", and
+#     only after re-verifying poetry.lock is genuinely absent from the repo
+#   - leaves every other open alert untouched, and instead files/updates a single
+#     tracking issue listing them, so anything the script is not certain about
+#     surfaces for manual (or Claude Code) review instead of being silently ignored
+#
+# Why PAT_FOR_PUSHES (and not GITHUB_TOKEN):
+# Writing to the Dependabot alerts API needs a token with the repo owner's
+# "Dependabot alerts" write permission, which GITHUB_TOKEN cannot be granted. Reused
+# here rather than adding a new secret (already used by other workflows, e.g.
+# update-version-and-release.yml and update_pre-commit_hooks.yml).
+#
+# Setup: requires the repository secret PAT_FOR_PUSHES with Dependabot alerts
+# (read/write), Issues (read/write) and Contents (read) access.
+
+on:
+  schedule:
+    # Weekly, Monday 11:17 UTC (20:17 JST).
+    - cron: '17 11 * * 1'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  dismiss:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check that PAT_FOR_PUSHES is configured
+        id: check
+        env:
+          PAT: ${{ secrets.PAT_FOR_PUSHES }}
+        run: |
+          if [ -z "${PAT}" ]; then
+            echo "PAT_FOR_PUSHES is not set; skipping."
+            echo "configured=false" >> "${GITHUB_OUTPUT}"
+          else
+            echo "configured=true" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Checkout
+        if: steps.check.outputs.configured == 'true'
+        uses: actions/checkout@v7.0.1
+
+      - name: Dismiss confirmed-stale poetry.lock alerts, escalate the rest
+        if: steps.check.outputs.configured == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.PAT_FOR_PUSHES }}
+          GH_REPO: ${{ github.repository }}
+        run: .github/scripts/dismiss-stale-poetry-alerts.sh
