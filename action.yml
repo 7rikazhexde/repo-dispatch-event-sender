@@ -26,12 +26,10 @@ inputs:
     description: 'Comma-separated list of OS in brackets'
     required: true
     default: '[ubuntu-latest,macos-13,windows-latest]'
-    type: string
   version_list:
     description: 'Comma-separated list of versions in brackets'
     required: true
     default: '[3.11,3.12]'
-    type: string
   custom_param:
     description: 'An optional custom parameter for additional configuration'
     required: false
