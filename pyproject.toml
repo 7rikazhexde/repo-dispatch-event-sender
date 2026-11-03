@@ -1,6 +1,6 @@
 [project]
 name = "repo-dispatch-event-sender"
-version = "0.1.6"
+version = "0.2.0"
 description = "A GitHub Action to trigger repository_dispatch events using the GitHub CLI."
 authors = [{ name = "7rikazhexde" }]
 readme = "README.md"
