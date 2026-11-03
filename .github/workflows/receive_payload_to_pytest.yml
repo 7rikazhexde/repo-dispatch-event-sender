@@ -27,7 +27,7 @@ jobs:
           case "$RUNNER_OS" in
             Linux)   sudo timedatectl set-timezone Asia/Tokyo ;;
             macOS)   sudo systemsetup -settimezone Asia/Tokyo > /dev/null ;;
-            Windows) tzutil /s "Tokyo Standard Time" ;;
+            Windows) powershell -NoProfile -Command 'Set-TimeZone -Id "Tokyo Standard Time"' ;;
           esac
 
       - name: Install uv
