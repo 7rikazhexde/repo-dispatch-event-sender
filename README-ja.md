@@ -78,7 +78,7 @@ uv sync
 |-------------------|--------------------------------------------------------|--------|
 | `REPOSITORY_NAME` | 対象リポジトリの名前 (例: `yourusername/yourrepo`)       | Yes    |
 | `EVENT_TYPE`      | トリガーするイベントの種類 (例: `test_workflow`)          | Yes    |
-| `OS_LIST`         | OS一覧 (例: '[ubuntu-latest,macos-13,windows-latest]')  | Yes    |
+| `OS_LIST`         | OS一覧 (例: '[ubuntu-latest,macos-latest,windows-latest]')  | Yes    |
 | `VERSION_LIST`    | バージョン一覧 (例: Pythonの場合: '[3.11,3.12,3.13]')    | Yes    |
 | `GHPAGES_BRANCH`  | GitHub Pagesブランチ (デフォルトは `gh-pages`)           | No     |
 | `CUSTOM_PARAM`    | ペイロードのカスタムパラメータ（オプション）               | No     |
@@ -119,7 +119,7 @@ jobs:
           repository_name: '7rikazhexde/repo-dispatch-event-sender'
           event_type: 'repo-dispatch-event-receive'
           ghpages_branch: 'ghpages'  # オプション1
-          os_list: '[ubuntu-latest,macos-13,windows-latest]'
+          os_list: '[ubuntu-latest,macos-latest,windows-latest]'
           version_list: '[3.11,3.12]'
           custom_param: 'custom_param_test_val'  # オプション2
         env:

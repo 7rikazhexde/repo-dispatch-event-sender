@@ -70,11 +70,13 @@ jobs:
         with:
           python-version: ${{matrix.python-version}}
       - name: Set timezone
-        uses: szenius/set-timezone@v2.0
-        with:
-          timezoneLinux: "Asia/Tokyo"
-          timezoneMacos: "Asia/Tokyo"
-          timezoneWindows: "Tokyo Standard Time"
+        shell: bash
+        run: |
+          case "$RUNNER_OS" in
+            Linux)   sudo timedatectl set-timezone Asia/Tokyo ;;
+            macOS)   sudo systemsetup -settimezone Asia/Tokyo > /dev/null ;;
+            Windows) tzutil /s "Tokyo Standard Time" ;;
+          esac
       - name: Check timezone
         shell: bash
         run: |
