@@ -79,5 +79,6 @@ jobs:
             For full changes, see the [comparison view](${{ github.server_url }}/${{ github.repository }}/compare/v${{ steps.current_version.outputs.version }}..v${{ steps.update_version.outputs.new_version }})
           draft: false
           prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_FOR_PUSHES }}
+          # action-gh-release v3 ignores the GITHUB_TOKEN env var and falls back to
+          # github.token unless `token` is passed explicitly.
+          token: ${{ secrets.PAT_FOR_PUSHES }}
