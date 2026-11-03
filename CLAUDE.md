@@ -44,6 +44,7 @@ All logic lives in `repo_dispatch_event_sender/src/dispatch/send_payload.py`:
 - `send_payload_to_pytest.yml`: on push to `main` (paths: src, tests, `uv.lock`) it uses `7rikazhexde/repo-dispatch-event-sender@main` to send event `send_payload_to_pytest`.
 - `receive_payload_to_pytest.yml`: triggered by that `repository_dispatch`; builds its OS × Python matrix directly from `client_payload.os_list` / `client_payload.version_list`. `repository_dispatch` only runs from the default branch, not on PRs.
 - `prch_test_matrix_json.yml`: PR check; matrix comes from `.github/workflows/matrix.json` (via `json2vars-setter`), runs tests and enforces **≥90% coverage**.
+- `dismiss-stale-poetry-alerts.yml`: weekly (and manual) run of `.github/scripts/dismiss-stale-poetry-alerts.sh`. The dependency graph still holds a stale `poetry.lock` snapshot after the uv migration, so new advisories can open alerts against it; the script dismisses only `manifest_path == "poetry.lock"` alerts (after confirming the file is absent) and lists any other open alert in a "Dependabot alerts need manual review" tracking issue. Uses the `PAT_FOR_PUSHES` secret.
 - `update-version-and-release.yml`: manual `workflow_dispatch` that bumps `uv version --bump <type>`, tags `vX.Y.Z`, and creates a GitHub release. Commits starting with `Bump version` / `[skip ci]` are skipped by the dispatch workflow.
 
 ## Notes
