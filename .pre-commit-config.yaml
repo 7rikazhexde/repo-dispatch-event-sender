@@ -31,14 +31,14 @@ repos:
 
   # https://docs.astral.sh/uv/guides/integration/pre-commit/
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.13.9
+    rev: 0.13.10
     hooks:
       - id: uv-lock
 
   # Reference: https://github.com/DavidAnson/markdownlint-cli2#overview
   # > markdownlint-cli is a traditional command-line interface for markdownlint.
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.50.0
+    rev: v0.50.1
     hooks:
       - id: markdownlint
         args: ["--config", ".markdownlint.json", "README.md"]
